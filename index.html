@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>운동 기록</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+</head>
+
+<body>
+
+    <!-- ==============================
+         로그인 화면
+    =============================== -->
+
+    <div id="authPage" class="auth-page">
+
+        <div class="auth-box">
+
+            <p class="subtitle">WORKOUT TRACKER</p>
+
+            <h1>운동 기록</h1>
+
+            <p class="auth-description">
+                이름과 비밀번호로 시작하세요.
+            </p>
+
+            <div class="auth-tabs">
+
+                <button
+                    id="loginTab"
+                    class="auth-tab active"
+                >
+                    로그인
+                </button>
+
+                <button
+                    id="signupTab"
+                    class="auth-tab"
+                >
+                    회원가입
+                </button>
+
+            </div>
+
+            <input
+                id="authName"
+                type="text"
+                maxlength="20"
+                placeholder="이름"
+                autocomplete="username"
+            >
+
+            <input
+                id="authPassword"
+                type="password"
+                maxlength="50"
+                placeholder="비밀번호"
+                autocomplete="current-password"
+            >
+
+            <button
+                id="authButton"
+                class="auth-button"
+            >
+                로그인
+            </button>
+
+            <p
+                id="authMessage"
+                class="auth-message"
+            ></p>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         운동 기록 화면
+    =============================== -->
+
+    <main
+        id="appPage"
+        class="app hidden"
+    >
+
+        <header class="header">
+
+            <div>
+
+                <p class="subtitle">
+                    WORKOUT TRACKER
+                </p>
+
+                <h1>
+                    운동 기록
+                </h1>
+
+                <p id="userNameDisplay"></p>
+
+            </div>
+
+            <div>
+
+                <button
+                    id="logoutButton"
+                    class="clear-button"
+                >
+                    로그아웃
+                </button>
+
+                <button
+                    id="clearButton"
+                    class="clear-button"
+                >
+                    전체 삭제
+                </button>
+
+            </div>
+
+        </header>
+
+
+        <!-- 총 운동 시간 -->
+
+        <section class="total-card">
+
+            <p>
+                총 운동 시간
+            </p>
+
+            <h2>
+
+                <span id="totalTime">
+                    0
+                </span>
+
+                <small>
+                    분
+                </small>
+
+            </h2>
+
+            <div class="summary">
+
+                <div>
+                    기록
+
+                    <strong id="recordCount">
+                        0
+                    </strong>
+
+                    개
+                </div>
+
+                <div>
+                    평균
+
+                    <strong id="averageTime">
+                        0.0
+                    </strong>
+
+                    분
+                </div>
+
+            </div>
+
+        </section>
+
+
+        <!-- 통계 -->
+
+        <section class="stats">
+
+            <div class="stat-card">
+
+                <p>
+                    가장 오래 한 운동
+                </p>
+
+                <h3 id="bestName">
+                    -
+                </h3>
+
+                <span id="bestTime">
+                    0분
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <p>
+                    오늘의 운동
+                </p>
+
+                <h3 id="todayTime">
+                    0분
+                </h3>
+
+                <span id="todayCount">
+                    0회 기록
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <p>
+                    이번 주 운동
+                </p>
+
+                <h3 id="weekTime">
+                    0분
+                </h3>
+
+                <span id="weekCount">
+                    0회 기록
+                </span>
+
+            </div>
+
+
+            <div class="stat-card">
+
+                <p>
+                    이번 달 운동
+                </p>
+
+                <h3 id="monthTime">
+                    0분
+                </h3>
+
+                <span id="monthCount">
+                    0회 기록
+                </span>
+
+            </div>
+
+        </section>
+
+
+        <!-- 운동 기록 -->
+
+        <section class="records-section">
+
+            <div class="section-header">
+
+                <h2>
+                    운동 기록
+                </h2>
+
+                <span id="recordStatus">
+                    아직 기록이 없어요.
+                </span>
+
+            </div>
+
+            <div id="recordList"></div>
+
+        </section>
+
+
+        <!-- 운동 추가 -->
+
+        <button
+            id="addButton"
+            class="add-button"
+        >
+            ＋ 운동 기록 추가
+        </button>
+
+    </main>
+
+
+    <!-- ==============================
+         운동 추가 팝업
+    =============================== -->
+
+    <div
+        id="modal"
+        class="modal hidden"
+    >
+
+        <div
+            id="modalBackground"
+            class="modal-background"
+        ></div>
+
+
+        <div class="modal-box">
+
+            <div class="modal-header">
+
+                <div>
+
+                    <p>
+                        NEW RECORD
+                    </p>
+
+                    <h2>
+                        운동 기록 추가
+                    </h2>
+
+                </div>
+
+
+                <button
+                    id="closeButton"
+                    class="close-button"
+                >
+                    ×
+                </button>
+
+            </div>
+
+
+            <form id="exerciseForm">
+
+                <label>
+
+                    운동 이름
+
+                    <input
+                        id="nameInput"
+                        type="text"
+                        maxlength="30"
+                        placeholder="예: 달리기"
+                        required
+                    >
+
+                </label>
+
+
+                <label>
+
+                    운동 시간
+
+                    <div class="time-input">
+
+                        <input
+                            id="timeInput"
+                            type="number"
+                            min="1"
+                            max="1440"
+                            placeholder="30"
+                            required
+                        >
+
+                        <span>
+                            분
+                        </span>
+
+                    </div>
+
+                </label>
+
+
+                <button
+                    type="submit"
+                    class="save-button"
+                >
+                    기록 저장
+                </button>
+
+            </form>
+
+        </div>
+
+    </div>
+
+
+    <!-- ==============================
+         아래 메뉴
+    =============================== -->
+
+    <nav class="bottom-nav">
+
+        <button
+            class="nav-button active"
+        >
+            기록
+        </button>
+
+        <button
+            id="statsButton"
+            class="nav-button"
+        >
+            통계
+        </button>
+
+    </nav>
+
+
+    <!-- 저장 알림 -->
+
+    <div
+        id="toast"
+        class="toast"
+    >
+        기록이 저장되었습니다.
+    </div>
+
+
+    <script src="script.js"></script>
+
+</body>
+</html>
