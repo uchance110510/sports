@@ -1,0 +1,958 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+
+    font-family:
+        Arial,
+        "Noto Sans KR",
+        sans-serif;
+
+    background: #f4f5f7;
+
+    color: #171717;
+}
+
+
+/* ==========================================
+   로그인
+========================================== */
+
+.auth-page {
+    min-height: 100vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    padding: 20px;
+}
+
+.auth-box {
+    width: 100%;
+    max-width: 400px;
+
+    padding: 35px 25px;
+
+    border-radius: 25px;
+
+    background: white;
+
+    box-shadow:
+        0 10px 35px rgba(0, 0, 0, 0.08);
+}
+
+.auth-box h1 {
+    margin: 0;
+
+    font-size: 32px;
+}
+
+.auth-description {
+    color: #888;
+
+    font-size: 13px;
+
+    margin-bottom: 25px;
+}
+
+.auth-tabs {
+    display: flex;
+
+    margin-bottom: 15px;
+
+    background: #f1f1f1;
+
+    border-radius: 12px;
+
+    padding: 4px;
+}
+
+.auth-tab {
+    flex: 1;
+
+    border: none;
+
+    padding: 11px;
+
+    border-radius: 9px;
+
+    background: transparent;
+
+    color: #999;
+
+    font-weight: bold;
+}
+
+.auth-tab.active {
+    background: white;
+
+    color: #171717;
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.auth-box input {
+    width: 100%;
+
+    margin-top: 10px;
+
+    padding: 15px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 13px;
+
+    outline: none;
+
+    background: #fafafa;
+
+    font-size: 15px;
+}
+
+.auth-button {
+    width: 100%;
+
+    margin-top: 12px;
+
+    padding: 15px;
+
+    border: none;
+
+    border-radius: 13px;
+
+    background: #181818;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+}
+
+.auth-message {
+    min-height: 20px;
+
+    margin: 12px 0 0;
+
+    color: #777;
+
+    font-size: 12px;
+
+    text-align: center;
+}
+
+
+/* ==========================================
+   전체 앱
+========================================== */
+
+.app {
+    width: 100%;
+
+    max-width: 600px;
+
+    min-height: 100vh;
+
+    margin: 0 auto;
+
+    padding: 28px 18px 130px;
+}
+
+.hidden {
+    display: none !important;
+}
+
+
+/* ==========================================
+   상단
+========================================== */
+
+.header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    margin-bottom: 22px;
+}
+
+.subtitle {
+    margin: 0 0 5px;
+
+    color: #777;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+.header h1 {
+    margin: 0;
+
+    font-size: 30px;
+
+    letter-spacing: -1px;
+}
+
+#userNameDisplay {
+    margin: 5px 0 0;
+
+    color: #888;
+
+    font-size: 13px;
+}
+
+.clear-button {
+    border: none;
+
+    background: transparent;
+
+    color: #888;
+
+    padding: 8px 0 8px 10px;
+
+    font-size: 12px;
+}
+
+
+/* ==========================================
+   총 운동 시간
+========================================== */
+
+.total-card {
+    padding: 25px;
+
+    border-radius: 24px;
+
+    background: #181818;
+
+    color: white;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.15);
+}
+
+.total-card p {
+    margin: 0;
+
+    color: #aaa;
+
+    font-size: 14px;
+}
+
+.total-card h2 {
+    margin: 10px 0 20px;
+
+    font-size: 52px;
+
+    line-height: 1;
+
+    letter-spacing: -2px;
+}
+
+.total-card h2 small {
+    font-size: 18px;
+
+    letter-spacing: 0;
+}
+
+.summary {
+    display: flex;
+
+    gap: 20px;
+
+    padding-top: 15px;
+
+    border-top: 1px solid #3b3b3b;
+
+    color: #aaa;
+
+    font-size: 13px;
+}
+
+.summary strong {
+    color: white;
+}
+
+
+/* ==========================================
+   통계
+========================================== */
+
+.stats {
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+    margin: 12px 0 20px;
+}
+
+.stat-card {
+    min-height: 120px;
+
+    padding: 18px;
+
+    border-radius: 18px;
+
+    background: white;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card p {
+    margin: 0;
+
+    color: #777;
+
+    font-size: 12px;
+}
+
+.stat-card h3 {
+    margin: 15px 0 5px;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 18px;
+}
+
+.stat-card span {
+    color: #999;
+
+    font-size: 12px;
+}
+
+
+/* ==========================================
+   달력
+========================================== */
+
+.calendar-section {
+    position: relative;
+
+    margin-bottom: 28px;
+
+    padding: 20px;
+
+    border-radius: 22px;
+
+    background: white;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.calendar-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+}
+
+.calendar-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+}
+
+.calendar-header button {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #f1f1f1;
+
+    font-size: 24px;
+
+    cursor: pointer;
+}
+
+.today-button {
+    display: block;
+
+    margin: 8px auto 15px;
+
+    padding: 5px 12px;
+
+    border: none;
+
+    border-radius: 20px;
+
+    background: #eee;
+
+    color: #555;
+
+    font-size: 11px;
+}
+
+.weekdays {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    margin-bottom: 5px;
+}
+
+.weekdays div {
+    padding: 6px 0;
+
+    color: #999;
+
+    font-size: 11px;
+
+    text-align: center;
+
+    font-weight: bold;
+}
+
+.calendar {
+    display: grid;
+
+    grid-template-columns:
+        repeat(7, 1fr);
+
+    gap: 4px;
+}
+
+.calendar-day {
+    position: relative;
+
+    width: 100%;
+
+    aspect-ratio: 1;
+
+    border: none;
+
+    border-radius: 10px;
+
+    background: transparent;
+
+    font-size: 13px;
+
+    cursor: pointer;
+}
+
+.calendar-day:hover {
+    background: #f1f1f1;
+}
+
+.calendar-day.empty {
+    pointer-events: none;
+}
+
+.calendar-day.today {
+    box-shadow:
+        inset 0 0 0 1px #777;
+
+    font-weight: bold;
+}
+
+.calendar-day.has-record {
+    background: #181818;
+
+    color: white;
+
+    font-weight: bold;
+}
+
+.calendar-day.has-record::after {
+    content: "";
+
+    position: absolute;
+
+    left: 50%;
+
+    bottom: 5px;
+
+    width: 4px;
+    height: 4px;
+
+    transform: translateX(-50%);
+
+    border-radius: 50%;
+
+    background: white;
+}
+
+.calendar-day.selected {
+    box-shadow:
+        inset 0 0 0 2px #777;
+}
+
+.selected-date-info {
+    margin-top: 15px;
+
+    padding: 12px;
+
+    border-radius: 12px;
+
+    background: #f5f5f5;
+
+    color: #777;
+
+    font-size: 12px;
+
+    line-height: 1.7;
+}
+
+.selected-date-info strong {
+    color: #171717;
+
+    font-size: 14px;
+}
+
+
+/* ==========================================
+   기록 제목
+========================================== */
+
+.section-header {
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 10px;
+
+    margin-bottom: 12px;
+}
+
+.section-header h2 {
+    margin: 0;
+
+    font-size: 20px;
+}
+
+.section-header span {
+    color: #999;
+
+    font-size: 12px;
+}
+
+
+/* ==========================================
+   기록 목록
+========================================== */
+
+#recordList {
+    display: flex;
+
+    flex-direction: column;
+
+    gap: 10px;
+}
+
+.record {
+    display: flex;
+
+    align-items: center;
+
+    gap: 12px;
+
+    padding: 15px;
+
+    border-radius: 17px;
+
+    background: white;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, 0.04);
+}
+
+.record-icon {
+    width: 44px;
+    height: 44px;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    flex-shrink: 0;
+
+    border-radius: 13px;
+
+    background: #eeeeee;
+
+    font-size: 20px;
+}
+
+.record-info {
+    flex: 1;
+
+    min-width: 0;
+}
+
+.record-info strong {
+    display: block;
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+
+    white-space: nowrap;
+
+    font-size: 15px;
+}
+
+.record-info small {
+    display: block;
+
+    margin-top: 4px;
+
+    color: #999;
+
+    font-size: 11px;
+}
+
+.record-time {
+    font-weight: bold;
+
+    white-space: nowrap;
+}
+
+.delete-button {
+    border: none;
+
+    background: transparent;
+
+    color: #aaa;
+
+    font-size: 18px;
+
+    padding: 5px;
+}
+
+
+/* ==========================================
+   운동 추가 버튼
+========================================== */
+
+.add-button {
+    position: fixed;
+
+    left: 50%;
+    bottom: 68px;
+
+    transform: translateX(-50%);
+
+    width: calc(100% - 36px);
+
+    max-width: 564px;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 17px;
+
+    background: #181818;
+
+    color: white;
+
+    font-size: 15px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 10px 25px rgba(0, 0, 0, 0.18);
+
+    z-index: 5;
+}
+
+
+/* ==========================================
+   아래 메뉴
+========================================== */
+
+.bottom-nav {
+    position: fixed;
+
+    left: 0;
+    right: 0;
+    bottom: 0;
+
+    height: 56px;
+
+    display: flex;
+
+    justify-content: center;
+
+    gap: 45px;
+
+    background: white;
+
+    border-top: 1px solid #e5e5e5;
+
+    z-index: 4;
+}
+
+.nav-button {
+    width: 70px;
+
+    border: none;
+
+    background: transparent;
+
+    color: #aaa;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+.nav-button.active {
+    color: #171717;
+}
+
+
+/* ==========================================
+   팝업
+========================================== */
+
+.modal {
+    position: fixed;
+
+    inset: 0;
+
+    z-index: 10;
+}
+
+.modal-background {
+    position: absolute;
+
+    inset: 0;
+
+    background: rgba(0, 0, 0, 0.45);
+}
+
+.modal-box {
+    position: absolute;
+
+    left: 50%;
+    bottom: 0;
+
+    transform: translateX(-50%);
+
+    width: 100%;
+
+    max-width: 600px;
+
+    padding: 25px 20px 30px;
+
+    border-radius: 25px 25px 0 0;
+
+    background: white;
+}
+
+.modal-header {
+    display: flex;
+
+    align-items: flex-start;
+
+    justify-content: space-between;
+
+    margin-bottom: 25px;
+}
+
+.modal-header p {
+    margin: 0 0 5px;
+
+    color: #777;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+.modal-header h2 {
+    margin: 0;
+
+    font-size: 23px;
+}
+
+.close-button {
+    width: 36px;
+    height: 36px;
+
+    border: none;
+
+    border-radius: 50%;
+
+    background: #eee;
+
+    color: #555;
+
+    font-size: 24px;
+}
+
+
+/* ==========================================
+   입력
+========================================== */
+
+label {
+    display: block;
+
+    margin-bottom: 18px;
+
+    font-size: 13px;
+
+    font-weight: bold;
+}
+
+.modal-box input {
+    width: 100%;
+
+    margin-top: 8px;
+
+    padding: 15px;
+
+    border: 1px solid #ddd;
+
+    border-radius: 13px;
+
+    outline: none;
+
+    background: #fafafa;
+
+    font-size: 15px;
+}
+
+.modal-box input:focus {
+    border-color: #777;
+
+    background: white;
+}
+
+.time-input {
+    position: relative;
+}
+
+.time-input input {
+    padding-right: 45px;
+}
+
+.time-input span {
+    position: absolute;
+
+    right: 15px;
+    top: 50%;
+
+    transform: translateY(-50%);
+
+    color: #777;
+
+    font-size: 13px;
+}
+
+
+/* ==========================================
+   저장 버튼
+========================================== */
+
+.save-button {
+    width: 100%;
+
+    padding: 16px;
+
+    border: none;
+
+    border-radius: 14px;
+
+    background: #181818;
+
+    color: white;
+
+    font-weight: bold;
+
+    font-size: 15px;
+}
+
+
+/* ==========================================
+   알림
+========================================== */
+
+.toast {
+    position: fixed;
+
+    left: 50%;
+    bottom: 130px;
+
+    transform:
+        translate(-50%, 20px);
+
+    padding: 11px 16px;
+
+    border-radius: 20px;
+
+    background: #181818;
+
+    color: white;
+
+    font-size: 13px;
+
+    opacity: 0;
+
+    pointer-events: none;
+
+    transition: 0.2s;
+
+    z-index: 20;
+}
+
+.toast.show {
+    transform:
+        translate(-50%, 0);
+
+    opacity: 1;
+}
+
+
+/* ==========================================
+   작은 휴대폰
+========================================== */
+
+@media (max-width: 400px) {
+
+    .app {
+        padding-left: 14px;
+        padding-right: 14px;
+    }
+
+    .total-card h2 {
+        font-size: 43px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .calendar-section {
+        padding: 15px;
+    }
+
+}
