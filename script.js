@@ -289,9 +289,10 @@ document
                     }
 
 
-                    showAuthMessage(
-                        "회원가입 중..."
-                    );
+                    // ★ 메시지를 화면 아래에 만들지 않고
+                    // 버튼 자체를 변경
+                    button.textContent =
+                        "회원가입 중...";
 
 
                     const result =
@@ -366,9 +367,11 @@ document
                 // 로그인
                 // ==================================
 
-                showAuthMessage(
-                    "로그인 중..."
-                );
+                // ★ 기존처럼 authMessage에
+                // "로그인 중..."을 넣지 않음
+                // → 화면이 아래로 밀리는 현상 방지
+                button.textContent =
+                    "로그인 중...";
 
 
                 const result =
@@ -464,10 +467,23 @@ document
             } finally {
 
                 // ==================================
-                // ★ 무조건 로딩 해제
+                // 무조건 로딩 해제
                 // ==================================
 
                 button.disabled = false;
+
+                // 버튼 글자 복구
+                if (authMode === "login") {
+
+                    button.textContent =
+                        "로그인";
+
+                } else {
+
+                    button.textContent =
+                        "회원가입";
+
+                }
 
             }
 
@@ -489,12 +505,13 @@ async function openApp() {
         .getElementById("appPage")
         .classList.remove("hidden");
 
+    // ★ 앱 화면으로 바뀌면 맨 위로 이동
+    window.scrollTo(0, 0);
 
     document
         .getElementById("userNameDisplay")
         .textContent =
             currentUser.name + "님";
-
 
     await loadRecords();
 
