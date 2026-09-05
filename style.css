@@ -412,9 +412,13 @@ body {
     z-index: 10;
 }
 
+
+/* 로그인 화면 전환을 위해 수정 */
+
 .hidden {
-    display: none;
+    display: none !important;
 }
+
 
 .modal-background {
     position: absolute;
