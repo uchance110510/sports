@@ -95,7 +95,7 @@ function checkPassword(password) {
     }
 
     if (
-        !/^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};:,.<>?]+$/.test(password)
+        !/^[A-Za-z0-9!@#$%^&*()_+\-=\\[\]{};:,.<>?]+$/.test(password)
     ) {
 
         return "비밀번호는 영어, 숫자, 특수문자만 사용할 수 있습니다.";
@@ -221,10 +221,13 @@ document
                     "authButton"
                 );
 
+
             // 중복 클릭 방지
+
             if (button.disabled) {
                 return;
             }
+
 
             const name =
                 document
@@ -252,6 +255,7 @@ document
 
             }
 
+
             if (name.length < 2) {
 
                 showAuthMessage(
@@ -264,6 +268,7 @@ document
 
 
             // 버튼 잠금
+
             button.disabled = true;
 
 
@@ -278,6 +283,7 @@ document
                     const passwordError =
                         checkPassword(password);
 
+
                     if (passwordError) {
 
                         showAuthMessage(
@@ -289,8 +295,8 @@ document
                     }
 
 
-                    // ★ 메시지를 화면 아래에 만들지 않고
-                    // 버튼 자체를 변경
+                    // 버튼 자체에 로딩 표시
+
                     button.textContent =
                         "회원가입 중...";
 
@@ -352,9 +358,11 @@ document
                     currentUser =
                         result.data;
 
+
                     saveLogin(
                         currentUser
                     );
+
 
                     await openApp();
 
@@ -367,9 +375,6 @@ document
                 // 로그인
                 // ==================================
 
-                // ★ 기존처럼 authMessage에
-                // "로그인 중..."을 넣지 않음
-                // → 화면이 아래로 밀리는 현상 방지
                 button.textContent =
                     "로그인 중...";
 
@@ -431,9 +436,11 @@ document
                 currentUser =
                     result.data;
 
+
                 saveLogin(
                     currentUser
                 );
+
 
                 await openApp();
 
@@ -472,7 +479,9 @@ document
 
                 button.disabled = false;
 
+
                 // 버튼 글자 복구
+
                 if (authMode === "login") {
 
                     button.textContent =
@@ -501,17 +510,22 @@ async function openApp() {
         .getElementById("authPage")
         .classList.add("hidden");
 
+
     document
         .getElementById("appPage")
         .classList.remove("hidden");
 
-    // ★ 앱 화면으로 바뀌면 맨 위로 이동
+
+    // 앱 화면으로 바뀌면 맨 위로 이동
+
     window.scrollTo(0, 0);
+
 
     document
         .getElementById("userNameDisplay")
         .textContent =
             currentUser.name + "님";
+
 
     await loadRecords();
 
@@ -564,6 +578,7 @@ async function loadRecords() {
     records =
         result.data || [];
 
+
     render();
 
 }
@@ -577,10 +592,9 @@ async function loadRecords() {
 function sum(n) {
 
     if (n === 0) {
-
         return 0;
-
     }
+
 
     return (
         Number(records[n - 1].time) +
@@ -597,9 +611,7 @@ function sum(n) {
 function getBest() {
 
     if (records.length === 0) {
-
         return null;
-
     }
 
 
@@ -670,11 +682,153 @@ function getTodayStats() {
 
 
     return {
-
         total: total,
-
         count: count
+    };
 
+}
+
+
+// ==========================================
+// 이번 주 운동
+// 월요일 ~ 오늘
+// ==========================================
+
+function getWeekStats() {
+
+    const today =
+        new Date();
+
+
+    // 현재 요일
+    // 일요일 = 0
+    // 월요일 = 1
+    // ...
+    // 토요일 = 6
+
+    const day =
+        today.getDay();
+
+
+    // 이번 주 월요일까지 며칠 전인지 계산
+
+    const diff =
+        day === 0
+            ? 6
+            : day - 1;
+
+
+    const startOfWeek =
+        new Date(today);
+
+
+    startOfWeek.setDate(
+        today.getDate() - diff
+    );
+
+
+    // 월요일 00:00:00
+
+    startOfWeek.setHours(
+        0,
+        0,
+        0,
+        0
+    );
+
+
+    let total = 0;
+    let count = 0;
+
+
+    for (
+        const record of records
+    ) {
+
+        const recordDate =
+            new Date(
+                record.date
+            );
+
+
+        if (
+            recordDate >= startOfWeek &&
+            recordDate <= today
+        ) {
+
+            total +=
+                Number(record.time);
+
+            count++;
+
+        }
+
+    }
+
+
+    return {
+        total: total,
+        count: count
+    };
+
+}
+
+
+// ==========================================
+// 이번 달 운동
+// 이번 달 1일 ~ 오늘
+// ==========================================
+
+function getMonthStats() {
+
+    const today =
+        new Date();
+
+
+    const startOfMonth =
+        new Date(
+            today.getFullYear(),
+            today.getMonth(),
+            1,
+            0,
+            0,
+            0,
+            0
+        );
+
+
+    let total = 0;
+    let count = 0;
+
+
+    for (
+        const record of records
+    ) {
+
+        const recordDate =
+            new Date(
+                record.date
+            );
+
+
+        if (
+            recordDate >= startOfMonth &&
+            recordDate <= today
+        ) {
+
+            total +=
+                Number(record.time);
+
+            count++;
+
+        }
+
+    }
+
+
+    return {
+        total: total,
+        count: count
     };
 
 }
@@ -707,31 +861,49 @@ function formatDate(dateString) {
 function getIcon(name) {
 
     if (name.includes("농구")) {
+
         return "🏀";
+
     }
+
 
     if (name.includes("축구")) {
+
         return "⚽";
+
     }
+
 
     if (name.includes("줄넘기")) {
+
         return "🪢";
+
     }
+
 
     if (name.includes("자전거")) {
+
         return "🚴";
+
     }
 
+
     if (name.includes("수영")) {
+
         return "🏊";
+
     }
+
 
     if (
         name.includes("팔굽혀펴기") ||
         name.includes("푸쉬업")
     ) {
+
         return "💪";
+
     }
+
 
     return "🏃";
 
@@ -743,6 +915,10 @@ function getIcon(name) {
 // ==========================================
 
 function render() {
+
+    // ======================================
+    // 전체 운동 통계
+    // ======================================
 
     const total =
         records.length > 0
@@ -774,6 +950,10 @@ function render() {
             average.toFixed(1);
 
 
+    // ======================================
+    // 가장 오래 한 운동
+    // ======================================
+
     const best =
         getBest();
 
@@ -784,6 +964,7 @@ function render() {
             .getElementById("bestName")
             .textContent =
                 best.name;
+
 
         document
             .getElementById("bestTime")
@@ -797,6 +978,7 @@ function render() {
             .textContent =
                 "-";
 
+
         document
             .getElementById("bestTime")
             .textContent =
@@ -804,6 +986,10 @@ function render() {
 
     }
 
+
+    // ======================================
+    // 오늘의 운동
+    // ======================================
 
     const today =
         getTodayStats();
@@ -820,6 +1006,50 @@ function render() {
         .textContent =
             today.count + "회 기록";
 
+
+    // ======================================
+    // 이번 주 운동
+    // ======================================
+
+    const week =
+        getWeekStats();
+
+
+    document
+        .getElementById("weekTime")
+        .textContent =
+            week.total + "분";
+
+
+    document
+        .getElementById("weekCount")
+        .textContent =
+            week.count + "회 기록";
+
+
+    // ======================================
+    // 이번 달 운동
+    // ======================================
+
+    const month =
+        getMonthStats();
+
+
+    document
+        .getElementById("monthTime")
+        .textContent =
+            month.total + "분";
+
+
+    document
+        .getElementById("monthCount")
+        .textContent =
+            month.count + "회 기록";
+
+
+    // ======================================
+    // 운동 기록 목록
+    // ======================================
 
     const list =
         document.getElementById(
@@ -848,6 +1078,8 @@ function render() {
             records.length + "개";
 
 
+    // 최신 기록부터 표시
+
     for (
         let i = records.length - 1;
         i >= 0;
@@ -858,31 +1090,41 @@ function render() {
             records[i];
 
 
+        // 기록 전체
+
         const div =
             document.createElement(
                 "div"
             );
 
+
         div.className =
             "record";
 
+
+        // 운동 아이콘
 
         const icon =
             document.createElement(
                 "div"
             );
 
+
         icon.className =
             "record-icon";
+
 
         icon.textContent =
             getIcon(record.name);
 
 
+        // 운동 이름 + 날짜
+
         const info =
             document.createElement(
                 "div"
             );
+
 
         info.className =
             "record-info";
@@ -893,6 +1135,7 @@ function render() {
                 "strong"
             );
 
+
         name.textContent =
             record.name;
 
@@ -901,6 +1144,7 @@ function render() {
             document.createElement(
                 "small"
             );
+
 
         date.textContent =
             formatDate(
@@ -912,25 +1156,33 @@ function render() {
         info.appendChild(date);
 
 
+        // 운동 시간
+
         const time =
             document.createElement(
                 "div"
             );
 
+
         time.className =
             "record-time";
+
 
         time.textContent =
             record.time + "분";
 
+
+        // 삭제 버튼
 
         const deleteButton =
             document.createElement(
                 "button"
             );
 
+
         deleteButton.className =
             "delete-button";
+
 
         deleteButton.textContent =
             "×";
@@ -947,6 +1199,8 @@ function render() {
             }
         );
 
+
+        // 화면에 추가
 
         div.appendChild(icon);
         div.appendChild(info);
@@ -1004,6 +1258,8 @@ document
                 );
 
 
+            // 운동 이름 검사
+
             if (name === "") {
 
                 alert(
@@ -1014,6 +1270,8 @@ document
 
             }
 
+
+            // 운동 시간 검사
 
             if (
                 !Number.isFinite(time) ||
@@ -1028,6 +1286,10 @@ document
 
             }
 
+
+            // ==================================
+            // Supabase에 기록 저장
+            // ==================================
 
             const result =
                 await supabaseClient
@@ -1054,6 +1316,8 @@ document
                     .single();
 
 
+            // 저장 오류
+
             if (result.error) {
 
                 console.error(
@@ -1061,23 +1325,39 @@ document
                     result.error
                 );
 
+
                 alert(
                     "운동 기록 저장에 실패했습니다.\n\n" +
                     result.error.message
                 );
+
 
                 return;
 
             }
 
 
+            // ==================================
+            // 새 기록을 현재 배열에도 추가
+            // ==================================
+
             records.push(
                 result.data
             );
 
 
+            // ==================================
+            // 화면 즉시 업데이트
+            //
+            // 여기서 render()가 실행되면서
+            // 오늘 / 이번 주 / 이번 달
+            // 모두 다시 계산됨
+            // ==================================
+
             render();
 
+
+            // 입력창 초기화
 
             document
                 .getElementById(
@@ -1093,7 +1373,12 @@ document
                 .value = "";
 
 
+            // 팝업 닫기
+
             closeModal();
+
+
+            // 저장 알림
 
             showToast();
 
@@ -1141,14 +1426,18 @@ async function deleteRecord(id) {
             result.error
         );
 
+
         alert(
             "삭제에 실패했습니다."
         );
+
 
         return;
 
     }
 
+
+    // 현재 배열에서도 삭제
 
     records =
         records.filter(
@@ -1156,6 +1445,10 @@ async function deleteRecord(id) {
                 record.id !== id
         );
 
+
+    // 삭제 후
+    // 오늘 / 주간 / 월간 통계까지
+    // 전부 다시 계산
 
     render();
 
@@ -1209,9 +1502,11 @@ async function clearAllRecords() {
             result.error
         );
 
+
         alert(
             "삭제에 실패했습니다."
         );
+
 
         return;
 
@@ -1219,6 +1514,10 @@ async function clearAllRecords() {
 
 
     records = [];
+
+
+    // 전체 삭제 후
+    // 모든 통계를 0으로 변경
 
     render();
 
@@ -1309,6 +1608,7 @@ document
 
             records = [];
 
+
             removeLogin();
 
 
@@ -1341,6 +1641,7 @@ document
 
 
             showAuthMessage("");
+
 
             render();
 
@@ -1438,6 +1739,7 @@ async function start() {
 
         currentUser =
             savedUser;
+
 
         await openApp();
 
