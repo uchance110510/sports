@@ -1,6 +1,6 @@
-/* =====================================================
-   Supabase 설정
-===================================================== */
+/* =========================================================
+   SUPABASE 설정
+========================================================= */
 
 const SUPABASE_URL =
     "https://wctknuijnyxbzpdplgrz.supabase.co";
@@ -15,9 +15,9 @@ const supabaseClient =
     );
 
 
-/* =====================================================
+/* =========================================================
    전역 변수
-===================================================== */
+========================================================= */
 
 let currentUser = null;
 let records = [];
@@ -26,50 +26,10 @@ let authMode = "login";
 
 let calendarDate = new Date();
 
-let selectedDate = new Date();
 
-
-/* =====================================================
-   DOM
-===================================================== */
-
-const authPage =
-    document.getElementById("authPage");
-
-const appPage =
-    document.getElementById("appPage");
-
-const authName =
-    document.getElementById("authName");
-
-const authPassword =
-    document.getElementById("authPassword");
-
-const authButton =
-    document.getElementById("authButton");
-
-const authMessage =
-    document.getElementById("authMessage");
-
-const loginTab =
-    document.getElementById("loginTab");
-
-const signupTab =
-    document.getElementById("signupTab");
-
-const authTitle =
-    document.getElementById("authTitle");
-
-const authDescription =
-    document.getElementById("authDescription");
-
-const passwordHelp =
-    document.getElementById("passwordHelp");
-
-
-/* =====================================================
+/* =========================================================
    로그인 저장
-===================================================== */
+========================================================= */
 
 function saveLogin(user) {
 
@@ -105,9 +65,9 @@ function removeLogin() {
 }
 
 
-/* =====================================================
+/* =========================================================
    비밀번호 검사
-===================================================== */
+========================================================= */
 
 function checkPassword(password) {
 
@@ -119,7 +79,7 @@ function checkPassword(password) {
         return false;
     }
 
-    if (!/^[A-Za-z0-9!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]+$/.test(password)) {
+    if (!/^[A-Za-z0-9!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]+$/.test(password)) {
         return false;
     }
 
@@ -131,7 +91,7 @@ function checkPassword(password) {
         return false;
     }
 
-    if (!/[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>/?]/.test(password)) {
+    if (!/[!@#$%^&*()_\-+=\[\]{};:'",.<>/?\\|`~]/.test(password)) {
         return false;
     }
 
@@ -139,249 +99,265 @@ function checkPassword(password) {
 }
 
 
-/* =====================================================
-   인증 메시지
-===================================================== */
+/* =========================================================
+   메시지
+========================================================= */
 
 function showAuthMessage(message) {
 
-    authMessage.textContent = message;
+    document.getElementById(
+        "authMessage"
+    ).textContent = message;
 }
 
 
-/* =====================================================
+/* =========================================================
    로그인 / 회원가입 탭
-===================================================== */
+========================================================= */
 
-loginTab.addEventListener("click", () => {
+document.getElementById("loginTab")
+    .addEventListener("click", () => {
 
-    authMode = "login";
+        authMode = "login";
 
-    loginTab.classList.add("active");
-    signupTab.classList.remove("active");
+        document
+            .getElementById("loginTab")
+            .classList.add("active");
 
-    authTitle.textContent =
-        "다시 만나서 반가워요";
+        document
+            .getElementById("signupTab")
+            .classList.remove("active");
 
-    authDescription.textContent =
-        "운동 기록을 확인하려면 로그인하세요.";
+        document
+            .getElementById("authButton")
+            .textContent = "로그인";
 
-    authButton.textContent =
-        "로그인";
+        document
+            .getElementById("passwordHint")
+            .classList.add("hidden");
 
-    passwordHelp.classList.add("hidden");
-
-    showAuthMessage("");
-});
-
-
-signupTab.addEventListener("click", () => {
-
-    authMode = "signup";
-
-    signupTab.classList.add("active");
-    loginTab.classList.remove("active");
-
-    authTitle.textContent =
-        "새 계정을 만들어보세요";
-
-    authDescription.textContent =
-        "이름과 비밀번호만으로 시작할 수 있습니다.";
-
-    authButton.textContent =
-        "회원가입";
-
-    passwordHelp.classList.remove("hidden");
-
-    showAuthMessage("");
-});
+        showAuthMessage("");
+    });
 
 
-/* =====================================================
+document.getElementById("signupTab")
+    .addEventListener("click", () => {
+
+        authMode = "signup";
+
+        document
+            .getElementById("signupTab")
+            .classList.add("active");
+
+        document
+            .getElementById("loginTab")
+            .classList.remove("active");
+
+        document
+            .getElementById("authButton")
+            .textContent = "회원가입";
+
+        document
+            .getElementById("passwordHint")
+            .classList.remove("hidden");
+
+        showAuthMessage("");
+    });
+
+
+/* =========================================================
    로그인 / 회원가입
-===================================================== */
+========================================================= */
 
-authButton.addEventListener("click", async () => {
+document.getElementById("authButton")
+    .addEventListener("click", async () => {
 
-    const name =
-        authName.value.trim();
+        const name =
+            document
+                .getElementById("authName")
+                .value
+                .trim();
 
-    const password =
-        authPassword.value;
+        const password =
+            document
+                .getElementById("authPassword")
+                .value;
 
-    if (!name) {
-
-        showAuthMessage(
-            "이름을 입력해주세요."
-        );
-
-        return;
-    }
-
-    if (!password) {
-
-        showAuthMessage(
-            "비밀번호를 입력해주세요."
-        );
-
-        return;
-    }
-
-
-    if (
-        authMode === "signup" &&
-        !checkPassword(password)
-    ) {
-
-        showAuthMessage(
-            "비밀번호 조건을 확인해주세요."
-        );
-
-        return;
-    }
-
-
-    const originalText =
-        authMode === "login"
-            ? "로그인"
-            : "회원가입";
-
-    authButton.textContent =
-        authMode === "login"
-            ? "로그인 중..."
-            : "회원가입 중...";
-
-    authButton.disabled = true;
-
-
-    try {
-
-        let result;
-
-
-        /* 회원가입 */
-
-        if (authMode === "signup") {
-
-            result =
-                await supabaseClient.rpc(
-                    "register_user",
-                    {
-                        p_name: name,
-                        p_password: password
-                    }
-                );
-
-        }
-
-
-        /* 로그인 */
-
-        else {
-
-            result =
-                await supabaseClient.rpc(
-                    "login_user",
-                    {
-                        p_name: name,
-                        p_password: password
-                    }
-                );
-        }
-
-
-        if (result.error) {
-            throw result.error;
-        }
-
-
-        if (!result.data) {
-
-            throw new Error(
-                "사용자 정보를 받아오지 못했습니다."
+        if (!name) {
+            showAuthMessage(
+                "이름을 입력해주세요."
             );
+            return;
         }
 
-
-        let user =
-            Array.isArray(result.data)
-                ? result.data[0]
-                : result.data;
-
-
-        if (!user || !user.id) {
-
-            throw new Error(
-                authMode === "login"
-                    ? "이름 또는 비밀번호가 올바르지 않습니다."
-                    : "회원가입에 실패했습니다."
+        if (!password) {
+            showAuthMessage(
+                "비밀번호를 입력해주세요."
             );
+            return;
         }
 
 
-        currentUser = user;
+        if (
+            authMode === "signup" &&
+            !checkPassword(password)
+        ) {
 
-        saveLogin(user);
+            showAuthMessage(
+                "비밀번호 형식을 확인해주세요."
+            );
 
-        await openApp();
-
-    } catch (error) {
-
-        console.error(error);
-
-        showAuthMessage(
-            error.message ||
-            "오류가 발생했습니다."
-        );
-
-    } finally {
-
-        authButton.disabled = false;
-
-        authButton.textContent =
-            originalText;
-    }
-
-});
+            return;
+        }
 
 
-/* =====================================================
+        const button =
+            document.getElementById("authButton");
+
+        const originalText =
+            authMode === "login"
+                ? "로그인"
+                : "회원가입";
+
+        button.disabled = true;
+        button.textContent =
+            authMode === "login"
+                ? "로그인 중..."
+                : "가입 중...";
+
+        showAuthMessage("");
+
+
+        try {
+
+            let result;
+
+            if (authMode === "signup") {
+
+                result =
+                    await supabaseClient.rpc(
+                        "register_user",
+                        {
+                            p_name: name,
+                            p_password: password
+                        }
+                    );
+
+            } else {
+
+                result =
+                    await supabaseClient.rpc(
+                        "login_user",
+                        {
+                            p_name: name,
+                            p_password: password
+                        }
+                    );
+            }
+
+
+            if (result.error) {
+                throw result.error;
+            }
+
+
+            if (!result.data) {
+
+                throw new Error(
+                    authMode === "login"
+                        ? "로그인 정보가 올바르지 않습니다."
+                        : "회원가입에 실패했습니다."
+                );
+            }
+
+
+            let user = result.data;
+
+            /*
+                RPC가 배열로 반환되는 경우 처리
+            */
+            if (Array.isArray(user)) {
+                user = user[0];
+            }
+
+
+            if (!user) {
+                throw new Error(
+                    "사용자 정보를 가져오지 못했습니다."
+                );
+            }
+
+
+            currentUser = user;
+
+            saveLogin(user);
+
+            await openApp();
+
+        } catch (error) {
+
+            console.error(error);
+
+            showAuthMessage(
+                error.message ||
+                "처리 중 오류가 발생했습니다."
+            );
+
+        } finally {
+
+            button.disabled = false;
+
+            button.textContent =
+                originalText;
+        }
+
+    });
+
+
+/* =========================================================
    앱 열기
-===================================================== */
+========================================================= */
 
 async function openApp() {
 
-    authPage.classList.add("hidden");
-    appPage.classList.remove("hidden");
+    document
+        .getElementById("authPage")
+        .classList.add("hidden");
+
+    document
+        .getElementById("appPage")
+        .classList.remove("hidden");
 
     window.scrollTo(0, 0);
 
-    document.getElementById(
-        "userNameDisplay"
-    ).textContent =
-        currentUser.name || "사용자";
+
+    document
+        .getElementById("userNameDisplay")
+        .textContent =
+            currentUser.name ||
+            "사용자";
+
 
     await loadRecords();
 
-    renderAll();
+    render();
 
     renderCalendar();
 }
 
 
-/* =====================================================
+/* =========================================================
    기록 불러오기
-===================================================== */
+========================================================= */
 
 async function loadRecords() {
 
     if (!currentUser) {
-        records = [];
         return;
     }
 
 
-    const { data, error } =
+    const result =
         await supabaseClient
             .from("exercise_records")
             .select("*")
@@ -397,11 +373,14 @@ async function loadRecords() {
             );
 
 
-    if (error) {
+    if (result.error) {
 
-        console.error(error);
+        console.error(
+            "기록 불러오기 실패:",
+            result.error
+        );
 
-        alert(
+        showToast(
             "운동 기록을 불러오지 못했습니다."
         );
 
@@ -411,14 +390,15 @@ async function loadRecords() {
     }
 
 
-    records = data || [];
+    records =
+        result.data || [];
 }
 
 
-/* =====================================================
+/* =========================================================
    재귀 함수
    전체 운동 시간 계산
-===================================================== */
+========================================================= */
 
 function sum(n) {
 
@@ -433,9 +413,9 @@ function sum(n) {
 }
 
 
-/* =====================================================
-   가장 오래 운동한 기록
-===================================================== */
+/* =========================================================
+   가장 오래 한 운동
+========================================================= */
 
 function getBest() {
 
@@ -443,10 +423,7 @@ function getBest() {
         return null;
     }
 
-
-    let best =
-        records[0];
-
+    let best = records[0];
 
     for (let i = 1; i < records.length; i++) {
 
@@ -454,23 +431,20 @@ function getBest() {
             Number(records[i].time) >
             Number(best.time)
         ) {
-
-            best =
-                records[i];
+            best = records[i];
         }
     }
-
 
     return best;
 }
 
 
-/* =====================================================
+/* =========================================================
    날짜 키
    YYYY-MM-DD
-===================================================== */
+========================================================= */
 
-function getDateKey(date) {
+function dateKey(date) {
 
     const year =
         date.getFullYear();
@@ -489,27 +463,27 @@ function getDateKey(date) {
 }
 
 
-/* =====================================================
+/* =========================================================
    기록의 날짜 키
-===================================================== */
+========================================================= */
 
-function getRecordDateKey(record) {
+function recordDateKey(record) {
 
     const date =
         new Date(record.date);
 
-    return getDateKey(date);
+    return dateKey(date);
 }
 
 
-/* =====================================================
+/* =========================================================
    오늘 통계
-===================================================== */
+========================================================= */
 
 function getTodayStats() {
 
     const today =
-        getDateKey(new Date());
+        dateKey(new Date());
 
     let total = 0;
     let count = 0;
@@ -518,7 +492,7 @@ function getTodayStats() {
     for (const record of records) {
 
         if (
-            getRecordDateKey(record) ===
+            recordDateKey(record) ===
             today
         ) {
 
@@ -537,15 +511,18 @@ function getTodayStats() {
 }
 
 
-/* =====================================================
+/* =========================================================
    이번 주 통계
-   월요일 ~ 오늘
-===================================================== */
+   월요일 시작
+========================================================= */
 
 function getWeekStats() {
 
     const today =
         new Date();
+
+    const start =
+        new Date(today);
 
     const day =
         today.getDay();
@@ -555,30 +532,15 @@ function getWeekStats() {
             ? 6
             : day - 1;
 
-
-    const startOfWeek =
-        new Date(today);
-
-    startOfWeek.setDate(
+    start.setDate(
         today.getDate() - diff
     );
 
-    startOfWeek.setHours(
+    start.setHours(
         0,
         0,
         0,
         0
-    );
-
-
-    const endOfWeek =
-        new Date(today);
-
-    endOfWeek.setHours(
-        23,
-        59,
-        59,
-        999
     );
 
 
@@ -588,12 +550,12 @@ function getWeekStats() {
 
     for (const record of records) {
 
-        const date =
+        const recordDate =
             new Date(record.date);
 
         if (
-            date >= startOfWeek &&
-            date <= endOfWeek
+            recordDate >= start &&
+            recordDate <= today
         ) {
 
             total +=
@@ -611,17 +573,16 @@ function getWeekStats() {
 }
 
 
-/* =====================================================
+/* =========================================================
    이번 달 통계
-===================================================== */
+========================================================= */
 
 function getMonthStats() {
 
     const today =
         new Date();
 
-
-    const startOfMonth =
+    const start =
         new Date(
             today.getFullYear(),
             today.getMonth(),
@@ -633,30 +594,18 @@ function getMonthStats() {
         );
 
 
-    const endOfMonth =
-        new Date(
-            today.getFullYear(),
-            today.getMonth() + 1,
-            0,
-            23,
-            59,
-            59,
-            999
-        );
-
-
     let total = 0;
     let count = 0;
 
 
     for (const record of records) {
 
-        const date =
+        const recordDate =
             new Date(record.date);
 
         if (
-            date >= startOfMonth &&
-            date <= endOfMonth
+            recordDate >= start &&
+            recordDate <= today
         ) {
 
             total +=
@@ -674,67 +623,104 @@ function getMonthStats() {
 }
 
 
-/* =====================================================
+/* =========================================================
    날짜 표시
-===================================================== */
+========================================================= */
 
 function formatDate(dateString) {
 
     const date =
         new Date(dateString);
 
-    return date.toLocaleDateString(
-        "ko-KR",
-        {
-            year: "numeric",
-            month: "long",
-            day: "numeric"
-        }
+    return (
+        `${date.getMonth() + 1}월 ` +
+        `${date.getDate()}일`
     );
 }
 
 
-/* =====================================================
-   기록 아이콘
-===================================================== */
+/* =========================================================
+   운동 아이콘
+========================================================= */
 
 function getIcon(name) {
 
-    if (!name) {
-        return "W";
+    const text =
+        name.toLowerCase();
+
+    if (
+        text.includes("러닝") ||
+        text.includes("달리") ||
+        text.includes("런닝")
+    ) {
+        return "🏃";
     }
 
-    return name
-        .trim()
-        .charAt(0)
-        .toUpperCase();
+    if (
+        text.includes("축구")
+    ) {
+        return "⚽";
+    }
+
+    if (
+        text.includes("농구")
+    ) {
+        return "🏀";
+    }
+
+    if (
+        text.includes("배구")
+    ) {
+        return "🏐";
+    }
+
+    if (
+        text.includes("수영")
+    ) {
+        return "🏊";
+    }
+
+    if (
+        text.includes("자전거") ||
+        text.includes("사이클")
+    ) {
+        return "🚴";
+    }
+
+    if (
+        text.includes("헬스") ||
+        text.includes("웨이트") ||
+        text.includes("근력")
+    ) {
+        return "🏋️";
+    }
+
+    if (
+        text.includes("걷기")
+    ) {
+        return "🚶";
+    }
+
+    if (
+        text.includes("요가")
+    ) {
+        return "🧘";
+    }
+
+    return "🏃";
 }
 
 
-/* =====================================================
-   전체 렌더링
-===================================================== */
+/* =========================================================
+   화면 렌더링
+========================================================= */
 
-function renderAll() {
-
-    renderRecordPage();
-
-    renderStatsPage();
-
-    renderCalendar();
-}
-
-
-/* =====================================================
-   기록 페이지
-===================================================== */
-
-function renderRecordPage() {
+function render() {
 
     const total =
-        records.length > 0
-            ? sum(records.length)
-            : 0;
+        records.length === 0
+            ? 0
+            : sum(records.length);
 
 
     const count =
@@ -742,9 +728,11 @@ function renderRecordPage() {
 
 
     const average =
-        count > 0
-            ? Math.round(total / count)
-            : 0;
+        count === 0
+            ? 0
+            : Math.round(
+                total / count
+            );
 
 
     const best =
@@ -763,73 +751,103 @@ function renderRecordPage() {
         getMonthStats();
 
 
+    /* 전체 */
+
     document.getElementById(
         "totalTime"
     ).textContent =
-        total + "분";
+        `${total}분`;
 
 
     document.getElementById(
         "recordCount"
     ).textContent =
-        count + "회";
+        `총 ${count}회 기록`;
 
+
+    /* 평균 */
 
     document.getElementById(
         "averageTime"
     ).textContent =
-        average + "분";
+        `${average}분`;
 
 
     document.getElementById(
-        "bestTime"
+        "summaryCount"
+    ).textContent =
+        `${count}회`;
+
+
+    /* 최고 기록 */
+
+    document.getElementById(
+        "bestWorkout"
     ).textContent =
         best
-            ? Number(best.time) + "분"
-            : "0분";
+            ? best.name
+            : "-";
 
+
+    /* 오늘 */
 
     document.getElementById(
         "todayTime"
     ).textContent =
-        today.total + "분";
+        `${today.total}분`;
 
 
     document.getElementById(
         "todayCount"
     ).textContent =
-        today.count + "회 기록";
+        `${today.count}회 기록`;
 
+
+    /* 주간 */
 
     document.getElementById(
         "weekTime"
     ).textContent =
-        week.total + "분";
+        `${week.total}분`;
 
 
     document.getElementById(
         "weekCount"
     ).textContent =
-        week.count + "회 기록";
+        `${week.count}회 기록`;
 
+
+    /* 월간 */
 
     document.getElementById(
         "monthTime"
     ).textContent =
-        month.total + "분";
+        `${month.total}분`;
 
 
     document.getElementById(
         "monthCount"
     ).textContent =
-        month.count + "회 기록";
+        `${month.count}회 기록`;
 
+
+    /* 기록 수 */
 
     document.getElementById(
-        "recordTotalLabel"
+        "historyCount"
     ).textContent =
-        count + "개";
+        `${count}개`;
 
+
+    renderRecords();
+}
+
+
+/* =========================================================
+   운동 기록 목록
+========================================================= */
+
+function renderRecords() {
 
     const list =
         document.getElementById(
@@ -837,15 +855,11 @@ function renderRecordPage() {
         );
 
 
-    list.innerHTML = "";
-
-
     if (records.length === 0) {
 
         list.innerHTML = `
-            <div class="empty-state">
-                <strong>아직 운동 기록이 없습니다.</strong>
-                기록 추가 버튼을 눌러 첫 운동을 기록해보세요.
+            <div class="empty-record">
+                아직 운동 기록이 없습니다.
             </div>
         `;
 
@@ -853,54 +867,47 @@ function renderRecordPage() {
     }
 
 
-    for (const record of records) {
+    list.innerHTML =
+        records
+            .map(record => {
 
-        const item =
-            document.createElement("div");
+                return `
+                    <div
+                        class="record-item"
+                    >
 
-        item.className =
-            "record-item";
+                        <div class="record-icon">
+                            ${getIcon(record.name)}
+                        </div>
 
+                        <div class="record-info">
 
-        item.innerHTML = `
-            <div class="record-left">
+                            <span class="record-name">
+                                ${escapeHTML(record.name)}
+                            </span>
 
-                <div class="record-icon">
-                    ${getIcon(record.name)}
-                </div>
+                            <span class="record-date">
+                                ${formatDate(record.date)}
+                            </span>
 
-                <div>
-                    <div class="record-name">
-                        ${escapeHtml(record.name)}
+                        </div>
+
+                        <strong class="record-time">
+                            ${Number(record.time)}분
+                        </strong>
+
+                        <button
+                            class="delete-record"
+                            data-id="${record.id}"
+                        >
+                            ×
+                        </button>
+
                     </div>
+                `;
 
-                    <div class="record-date">
-                        ${formatDate(record.date)}
-                    </div>
-                </div>
-
-            </div>
-
-            <div class="record-right">
-
-                <strong class="record-time">
-                    ${Number(record.time)}분
-                </strong>
-
-                <button
-                    class="delete-record"
-                    data-id="${record.id}"
-                    title="삭제"
-                >
-                    ×
-                </button>
-
-            </div>
-        `;
-
-
-        list.appendChild(item);
-    }
+            })
+            .join("");
 
 
     document
@@ -914,238 +921,320 @@ function renderRecordPage() {
                     deleteRecord(
                         button.dataset.id
                     );
+
                 }
             );
+
         });
 }
 
 
-/* =====================================================
-   통계 페이지
-===================================================== */
+/* =========================================================
+   HTML 문자 처리
+========================================================= */
 
-function renderStatsPage() {
+function escapeHTML(value) {
 
-    const total =
-        records.length > 0
-            ? sum(records.length)
-            : 0;
-
-
-    const count =
-        records.length;
-
-
-    const average =
-        count > 0
-            ? Math.round(total / count)
-            : 0;
-
-
-    const best =
-        getBest();
-
-
-    const today =
-        getTodayStats();
-
-
-    const week =
-        getWeekStats();
-
-
-    const month =
-        getMonthStats();
-
-
-    document.getElementById(
-        "statsTotalTime"
-    ).textContent =
-        total + "분";
-
-
-    document.getElementById(
-        "statsRecordCount"
-    ).textContent =
-        count + "회";
-
-
-    document.getElementById(
-        "statsTodayTime"
-    ).textContent =
-        today.total + "분";
-
-
-    document.getElementById(
-        "statsTodayCount"
-    ).textContent =
-        today.count + "회";
-
-
-    document.getElementById(
-        "statsWeekTime"
-    ).textContent =
-        week.total + "분";
-
-
-    document.getElementById(
-        "statsWeekCount"
-    ).textContent =
-        week.count + "회";
-
-
-    document.getElementById(
-        "statsMonthTime"
-    ).textContent =
-        month.total + "분";
-
-
-    document.getElementById(
-        "statsMonthCount"
-    ).textContent =
-        month.count + "회";
-
-
-    document.getElementById(
-        "statsAverageTime"
-    ).textContent =
-        average + "분";
-
-
-    document.getElementById(
-        "statsBestTime"
-    ).textContent =
-        best
-            ? Number(best.time) + "분"
-            : "0분";
-
-
-    document.getElementById(
-        "statsBestName"
-    ).textContent =
-        best
-            ? best.name
-            : "-";
-
-
-    const max =
-        Math.max(
-            today.count,
-            week.count,
-            month.count,
-            1
-        );
-
-
-    document.getElementById(
-        "todayBar"
-    ).style.width =
-        `${(today.count / max) * 100}%`;
-
-
-    document.getElementById(
-        "weekBar"
-    ).style.width =
-        `${(week.count / max) * 100}%`;
-
-
-    document.getElementById(
-        "monthBar"
-    ).style.width =
-        `${(month.count / max) * 100}%`;
-
-
-    document.getElementById(
-        "todayBarValue"
-    ).textContent =
-        today.count + "회";
-
-
-    document.getElementById(
-        "weekBarValue"
-    ).textContent =
-        week.count + "회";
-
-
-    document.getElementById(
-        "monthBarValue"
-    ).textContent =
-        month.count + "회";
-
-
-    renderStatsRecent();
+    return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
 }
 
 
-/* =====================================================
-   통계 최근 기록
-===================================================== */
+/* =========================================================
+   운동 기록 추가
+========================================================= */
 
-function renderStatsRecent() {
+document.getElementById(
+    "exerciseForm"
+).addEventListener(
+    "submit",
+    async event => {
 
-    const container =
-        document.getElementById(
-            "statsRecentList"
+        event.preventDefault();
+
+
+        if (!currentUser) {
+
+            showToast(
+                "로그인이 필요합니다."
+            );
+
+            return;
+        }
+
+
+        const name =
+            document
+                .getElementById("exerciseName")
+                .value
+                .trim();
+
+
+        const time =
+            Number(
+                document
+                    .getElementById("exerciseTime")
+                    .value
+            );
+
+
+        if (!name) {
+
+            showToast(
+                "운동 이름을 입력해주세요."
+            );
+
+            return;
+        }
+
+
+        if (
+            !Number.isFinite(time) ||
+            time <= 0
+        ) {
+
+            showToast(
+                "운동 시간을 확인해주세요."
+            );
+
+            return;
+        }
+
+
+        const result =
+            await supabaseClient
+                .from("exercise_records")
+                .insert({
+                    user_id:
+                        currentUser.id,
+
+                    name:
+                        name,
+
+                    time:
+                        time,
+
+                    date:
+                        new Date().toISOString()
+                })
+                .select()
+                .single();
+
+
+        if (result.error) {
+
+            console.error(
+                result.error
+            );
+
+            showToast(
+                "운동 기록 저장에 실패했습니다."
+            );
+
+            return;
+        }
+
+
+        records.unshift(
+            result.data
         );
 
 
-    container.innerHTML = "";
+        render();
+
+        renderCalendar();
 
 
-    const recent =
-        records.slice(0, 7);
+        document
+            .getElementById("exerciseForm")
+            .reset();
 
 
-    if (recent.length === 0) {
+        closeModal(
+            "modal"
+        );
 
-        container.innerHTML = `
-            <div class="empty-state">
-                아직 기록이 없습니다.
-            </div>
-        `;
+
+        showToast(
+            "운동 기록이 저장되었습니다."
+        );
+
+    }
+);
+
+
+/* =========================================================
+   기록 삭제
+========================================================= */
+
+async function deleteRecord(id) {
+
+    const result =
+        await supabaseClient
+            .from("exercise_records")
+            .delete()
+            .eq("id", id)
+            .eq(
+                "user_id",
+                currentUser.id
+            );
+
+
+    if (result.error) {
+
+        console.error(
+            result.error
+        );
+
+        showToast(
+            "기록 삭제에 실패했습니다."
+        );
 
         return;
     }
 
 
-    for (const record of recent) {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "stats-recent-item";
-
-
-        item.innerHTML = `
-
-            <div>
-
-                <div class="stats-recent-name">
-                    ${escapeHtml(record.name)}
-                </div>
-
-                <div class="stats-recent-date">
-                    ${formatDate(record.date)}
-                </div>
-
-            </div>
-
-            <strong class="stats-recent-time">
-                ${Number(record.time)}분
-            </strong>
-
-        `;
+    records =
+        records.filter(
+            record =>
+                String(record.id) !==
+                String(id)
+        );
 
 
-        container.appendChild(item);
-    }
+    render();
+
+    renderCalendar();
+
+    showToast(
+        "기록이 삭제되었습니다."
+    );
 }
 
 
-/* =====================================================
-   캘린더 렌더링
-===================================================== */
+/* =========================================================
+   전체 삭제
+========================================================= */
+
+document.getElementById(
+    "clearAllButton"
+).addEventListener(
+    "click",
+    async () => {
+
+        if (records.length === 0) {
+
+            showToast(
+                "삭제할 기록이 없습니다."
+            );
+
+            return;
+        }
+
+
+        const ok =
+            confirm(
+                "모든 운동 기록을 삭제하시겠습니까?"
+            );
+
+
+        if (!ok) {
+            return;
+        }
+
+
+        const result =
+            await supabaseClient
+                .from("exercise_records")
+                .delete()
+                .eq(
+                    "user_id",
+                    currentUser.id
+                );
+
+
+        if (result.error) {
+
+            console.error(
+                result.error
+            );
+
+            showToast(
+                "전체 삭제에 실패했습니다."
+            );
+
+            return;
+        }
+
+
+        records = [];
+
+        render();
+
+        renderCalendar();
+
+        showToast(
+            "모든 운동 기록을 삭제했습니다."
+        );
+    }
+);
+
+
+/* =========================================================
+   기록 추가 모달
+========================================================= */
+
+document.getElementById(
+    "addButton"
+).addEventListener(
+    "click",
+    () => {
+
+        document
+            .getElementById("modal")
+            .classList.remove("hidden");
+
+        setTimeout(
+            () => {
+                document
+                    .getElementById("exerciseName")
+                    .focus();
+            },
+            50
+        );
+    }
+);
+
+
+document.getElementById(
+    "closeModalButton"
+).addEventListener(
+    "click",
+    () => {
+        closeModal("modal");
+    }
+);
+
+
+/* 배경 클릭 */
+
+document
+    .querySelector("#modal .modal-backdrop")
+    .addEventListener(
+        "click",
+        () => {
+            closeModal("modal");
+        }
+    );
+
+
+/* =========================================================
+   달력
+========================================================= */
 
 function renderCalendar() {
 
@@ -1171,6 +1260,10 @@ function renderCalendar() {
     grid.innerHTML = "";
 
 
+    /*
+        월요일 시작
+    */
+
     const firstDay =
         new Date(
             year,
@@ -1179,23 +1272,25 @@ function renderCalendar() {
         );
 
 
-    const lastDay =
+    let startDay =
+        firstDay.getDay();
+
+
+    startDay =
+        startDay === 0
+            ? 6
+            : startDay - 1;
+
+
+    const daysInMonth =
         new Date(
             year,
             month + 1,
             0
-        );
+        ).getDate();
 
 
-    const startWeekday =
-        firstDay.getDay();
-
-
-    const daysInMonth =
-        lastDay.getDate();
-
-
-    const previousLastDay =
+    const previousMonthDays =
         new Date(
             year,
             month,
@@ -1206,18 +1301,10 @@ function renderCalendar() {
     const totalCells =
         Math.ceil(
             (
-                startWeekday +
+                startDay +
                 daysInMonth
             ) / 7
         ) * 7;
-
-
-    const todayKey =
-        getDateKey(new Date());
-
-
-    const selectedKey =
-        getDateKey(selectedDate);
 
 
     for (
@@ -1226,190 +1313,190 @@ function renderCalendar() {
         i++
     ) {
 
-        let dayNumber;
+        let day;
         let cellDate;
         let otherMonth = false;
 
 
-        if (i < startWeekday) {
+        if (i < startDay) {
 
-            dayNumber =
-                previousLastDay -
-                startWeekday +
+            day =
+                previousMonthDays -
+                startDay +
                 i +
                 1;
-
 
             cellDate =
                 new Date(
                     year,
                     month - 1,
-                    dayNumber
+                    day
                 );
 
             otherMonth = true;
 
         } else if (
             i >=
-            startWeekday +
+            startDay +
             daysInMonth
         ) {
 
-            dayNumber =
+            day =
                 i -
                 (
-                    startWeekday +
+                    startDay +
                     daysInMonth
                 ) +
                 1;
-
 
             cellDate =
                 new Date(
                     year,
                     month + 1,
-                    dayNumber
+                    day
                 );
 
             otherMonth = true;
 
         } else {
 
-            dayNumber =
+            day =
                 i -
-                startWeekday +
+                startDay +
                 1;
-
 
             cellDate =
                 new Date(
                     year,
                     month,
-                    dayNumber
+                    day
                 );
         }
 
 
-        const dateKey =
-            getDateKey(cellDate);
+        const key =
+            dateKey(cellDate);
 
 
-        const dayRecords =
-            records.filter(
-                record =>
-                    getRecordDateKey(record) ===
-                    dateKey
+        const button =
+            document.createElement(
+                "button"
             );
 
 
-        const cell =
-            document.createElement("button");
-
-
-        cell.type = "button";
-
-        cell.className =
+        button.className =
             "calendar-day";
 
 
+        button.textContent =
+            day;
+
+
+        button.dataset.date =
+            key;
+
+
         if (otherMonth) {
-            cell.classList.add(
+            button.classList.add(
                 "other-month"
             );
         }
 
 
-        if (dateKey === todayKey) {
-            cell.classList.add(
+        if (
+            key ===
+            dateKey(new Date())
+        ) {
+            button.classList.add(
                 "today"
             );
         }
 
 
-        if (dateKey === selectedKey) {
-            cell.classList.add(
-                "selected"
+        const hasRecord =
+            records.some(
+                record =>
+                    recordDateKey(record) ===
+                    key
+            );
+
+
+        if (hasRecord) {
+
+            button.classList.add(
+                "has-record"
             );
         }
 
 
-        cell.innerHTML = `
-
-            <span class="day-number">
-                ${dayNumber}
-            </span>
-
-            ${
-                dayRecords.length > 0
-                    ? `
-                        <span class="workout-dot">
-                            ${dayRecords.length}회
-                        </span>
-                    `
-                    : ""
-            }
-
-        `;
-
-
-        cell.addEventListener(
+        button.addEventListener(
             "click",
             () => {
 
-                selectedDate =
-                    cellDate;
+                openDayModal(
+                    cellDate
+                );
 
-
-                calendarDate =
-                    new Date(
-                        cellDate.getFullYear(),
-                        cellDate.getMonth(),
-                        1
-                    );
-
-
-                renderCalendar();
             }
         );
 
 
-        grid.appendChild(cell);
+        grid.appendChild(
+            button
+        );
     }
-
-
-    renderSelectedDay();
 }
 
 
-/* =====================================================
-   선택한 날짜
-===================================================== */
+/* 이전 달 */
 
-function renderSelectedDay() {
+document.getElementById(
+    "prevMonthButton"
+).addEventListener(
+    "click",
+    () => {
 
-    const dateKey =
-        getDateKey(selectedDate);
+        calendarDate.setMonth(
+            calendarDate.getMonth() - 1
+        );
+
+        renderCalendar();
+    }
+);
+
+
+/* 다음 달 */
+
+document.getElementById(
+    "nextMonthButton"
+).addEventListener(
+    "click",
+    () => {
+
+        calendarDate.setMonth(
+            calendarDate.getMonth() + 1
+        );
+
+        renderCalendar();
+    }
+);
+
+
+/* =========================================================
+   날짜 상세
+========================================================= */
+
+function openDayModal(date) {
+
+    const key =
+        dateKey(date);
 
 
     const dayRecords =
         records.filter(
             record =>
-                getRecordDateKey(record) ===
-                dateKey
-        );
-
-
-    document.getElementById(
-        "selectedDateTitle"
-    ).textContent =
-        selectedDate.toLocaleDateString(
-            "ko-KR",
-            {
-                year: "numeric",
-                month: "long",
-                day: "numeric",
-                weekday: "long"
-            }
+                recordDateKey(record) ===
+                key
         );
 
 
@@ -1423,48 +1510,382 @@ function renderSelectedDay() {
     }
 
 
+    const count =
+        dayRecords.length;
+
+
     const average =
-        dayRecords.length > 0
-            ? Math.round(
-                total /
-                dayRecords.length
-            )
-            : 0;
+        count === 0
+            ? 0
+            : Math.round(
+                total / count
+            );
 
 
     document.getElementById(
-        "selectedDayTotal"
+        "dayModalTitle"
     ).textContent =
-        total + "분";
+        `${date.getFullYear()}년 ${
+            date.getMonth() + 1
+        }월 ${
+            date.getDate()
+        }일`;
 
 
     document.getElementById(
-        "selectedDayCount"
+        "dayTotalTime"
     ).textContent =
-        dayRecords.length + "회";
+        `${total}분`;
 
 
     document.getElementById(
-        "selectedDayAverage"
+        "dayRecordCount"
     ).textContent =
-        average + "분";
+        `${count}회`;
+
+
+    document.getElementById(
+        "dayAverageTime"
+    ).textContent =
+        `${average}분`;
 
 
     const list =
         document.getElementById(
-            "selectedDayRecords"
+            "dayRecordList"
         );
-
-
-    list.innerHTML = "";
 
 
     if (dayRecords.length === 0) {
 
         list.innerHTML = `
-            <div class="empty-state">
-                <strong>운동 기록이 없습니다.</strong>
-                이 날짜에는 저장된 운동 기록이 없습니다.
+            <div class="empty-record">
+                이 날짜에는 운동 기록이 없습니다.
+            </div>
+        `;
+
+    } else {
+
+        list.innerHTML =
+            dayRecords
+                .map(record => {
+
+                    return `
+                        <div class="day-record-item">
+
+                            <span>
+                                ${getIcon(record.name)}
+                                ${escapeHTML(record.name)}
+                            </span>
+
+                            <strong>
+                                ${Number(record.time)}분
+                            </strong>
+
+                        </div>
+                    `;
+
+                })
+                .join("");
+    }
+
+
+    document
+        .getElementById("dayModal")
+        .classList.remove("hidden");
+}
+
+
+/* 날짜 모달 닫기 */
+
+document.getElementById(
+    "closeDayModalButton"
+).addEventListener(
+    "click",
+    () => {
+
+        closeModal(
+            "dayModal"
+        );
+    }
+);
+
+
+document
+    .querySelector("#dayModal .modal-backdrop")
+    .addEventListener(
+        "click",
+        () => {
+
+            closeModal(
+                "dayModal"
+            );
+        }
+    );
+
+
+/* =========================================================
+   통계
+========================================================= */
+
+document.getElementById(
+    "statisticsButton"
+).addEventListener(
+    "click",
+    () => {
+
+        renderStatistics();
+
+        document
+            .getElementById(
+                "statisticsModal"
+            )
+            .classList.remove(
+                "hidden"
+            );
+    }
+);
+
+
+document.getElementById(
+    "closeStatisticsButton"
+).addEventListener(
+    "click",
+    () => {
+
+        closeModal(
+            "statisticsModal"
+        );
+    }
+);
+
+
+document
+    .querySelector(
+        "#statisticsModal .modal-backdrop"
+    )
+    .addEventListener(
+        "click",
+        () => {
+
+            closeModal(
+                "statisticsModal"
+            );
+        }
+    );
+
+
+/* =========================================================
+   통계 화면 생성
+========================================================= */
+
+function renderStatistics() {
+
+    const total =
+        records.length === 0
+            ? 0
+            : sum(records.length);
+
+
+    const count =
+        records.length;
+
+
+    const average =
+        count === 0
+            ? 0
+            : Math.round(
+                total / count
+            );
+
+
+    const best =
+        getBest();
+
+
+    document.getElementById(
+        "statisticsTotal"
+    ).textContent =
+        `${total}분`;
+
+
+    document.getElementById(
+        "statisticsCount"
+    ).textContent =
+        `${count}회`;
+
+
+    document.getElementById(
+        "statisticsAverage"
+    ).textContent =
+        `${average}분`;
+
+
+    document.getElementById(
+        "statisticsBest"
+    ).textContent =
+        best
+            ? best.name
+            : "-";
+
+
+    renderWeeklyChart();
+
+    renderExerciseStatistics();
+}
+
+
+/* =========================================================
+   최근 7일 차트
+========================================================= */
+
+function renderWeeklyChart() {
+
+    const chart =
+        document.getElementById(
+            "weeklyChart"
+        );
+
+
+    const days = [];
+
+
+    for (
+        let i = 6;
+        i >= 0;
+        i--
+    ) {
+
+        const date =
+            new Date();
+
+        date.setDate(
+            date.getDate() - i
+        );
+
+        days.push(date);
+    }
+
+
+    const values =
+        days.map(
+            date => {
+
+                const key =
+                    dateKey(date);
+
+                return records
+                    .filter(
+                        record =>
+                            recordDateKey(record) ===
+                            key
+                    )
+                    .reduce(
+                        (
+                            total,
+                            record
+                        ) =>
+                            total +
+                            Number(
+                                record.time
+                            ),
+                        0
+                    );
+            }
+        );
+
+
+    const max =
+        Math.max(
+            ...values,
+            1
+        );
+
+
+    chart.innerHTML =
+        days
+            .map(
+                (
+                    date,
+                    index
+                ) => {
+
+                    const value =
+                        values[index];
+
+
+                    const height =
+                        value === 0
+                            ? 2
+                            : Math.max(
+                                6,
+                                (
+                                    value /
+                                    max
+                                ) *
+                                100
+                            );
+
+
+                    const dayName =
+                        [
+                            "일",
+                            "월",
+                            "화",
+                            "수",
+                            "목",
+                            "금",
+                            "토"
+                        ][
+                            date.getDay()
+                        ];
+
+
+                    return `
+                        <div class="chart-column">
+
+                            <span class="chart-value">
+                                ${value}분
+                            </span>
+
+                            <div class="chart-bar-wrap">
+
+                                <div
+                                    class="chart-bar"
+                                    style="height:${height}%"
+                                ></div>
+
+                            </div>
+
+                            <span class="chart-day">
+                                ${dayName}
+                            </span>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
+}
+
+
+/* =========================================================
+   운동 종류별 통계
+========================================================= */
+
+function renderExerciseStatistics() {
+
+    const container =
+        document.getElementById(
+            "exerciseStatistics"
+        );
+
+
+    if (records.length === 0) {
+
+        container.innerHTML = `
+            <div class="empty-record">
+                아직 통계를 만들 기록이 없습니다.
             </div>
         `;
 
@@ -1472,587 +1893,226 @@ function renderSelectedDay() {
     }
 
 
-    for (const record of dayRecords) {
-
-        const item =
-            document.createElement("div");
-
-        item.className =
-            "day-record";
+    const exerciseMap = {};
 
 
-        item.innerHTML = `
+    for (const record of records) {
 
-            <span class="day-record-name">
-                ${escapeHtml(record.name)}
-            </span>
+        if (!exerciseMap[record.name]) {
 
-            <strong class="day-record-time">
-                ${Number(record.time)}분
-            </strong>
-
-        `;
+            exerciseMap[record.name] = {
+                count: 0,
+                total: 0
+            };
+        }
 
 
-        list.appendChild(item);
+        exerciseMap[record.name].count++;
+
+        exerciseMap[record.name].total +=
+            Number(record.time);
     }
+
+
+    const list =
+        Object.entries(
+            exerciseMap
+        )
+        .sort(
+            (
+                a,
+                b
+            ) =>
+                b[1].total -
+                a[1].total
+        );
+
+
+    const max =
+        list.length > 0
+            ? list[0][1].total
+            : 1;
+
+
+    container.innerHTML =
+        list
+            .map(
+                ([name, data]) => {
+
+                    const width =
+                        Math.max(
+                            5,
+                            (
+                                data.total /
+                                max
+                            ) *
+                            100
+                        );
+
+
+                    return `
+                        <div class="exercise-stat-row">
+
+                            <span class="exercise-stat-name">
+                                ${escapeHTML(name)}
+                            </span>
+
+                            <div class="exercise-stat-bar-wrap">
+
+                                <div
+                                    class="exercise-stat-bar"
+                                    style="width:${width}%"
+                                ></div>
+
+                            </div>
+
+                            <span class="exercise-stat-time">
+                                ${data.total}분
+                            </span>
+
+                        </div>
+                    `;
+                }
+            )
+            .join("");
 }
 
 
-/* =====================================================
-   기록 추가
-===================================================== */
+/* =========================================================
+   테마
+========================================================= */
 
-document
-    .getElementById("exerciseForm")
-    .addEventListener(
-        "submit",
-        async event => {
-
-            event.preventDefault();
-
-
-            if (!currentUser) {
-
-                alert(
-                    "로그인이 필요합니다."
-                );
-
-                return;
-            }
-
-
-            const name =
-                document.getElementById(
-                    "exerciseName"
-                ).value.trim();
-
-
-            const time =
-                Number(
-                    document.getElementById(
-                        "exerciseTime"
-                    ).value
-                );
-
-
-            if (!name) {
-
-                alert(
-                    "운동 이름을 입력해주세요."
-                );
-
-                return;
-            }
-
-
-            if (
-                !Number.isFinite(time) ||
-                time <= 0
-            ) {
-
-                alert(
-                    "운동 시간을 올바르게 입력해주세요."
-                );
-
-                return;
-            }
-
-
-            const saveButton =
-                document.getElementById(
-                    "saveRecordButton"
-                );
-
-
-            saveButton.disabled =
-                true;
-
-            saveButton.textContent =
-                "저장 중...";
-
-
-            try {
-
-                const { data, error } =
-                    await supabaseClient
-                        .from(
-                            "exercise_records"
-                        )
-                        .insert([
-                            {
-                                user_id:
-                                    currentUser.id,
-
-                                name:
-                                    name,
-
-                                time:
-                                    time,
-
-                                date:
-                                    new Date().toISOString()
-                            }
-                        ])
-                        .select()
-                        .single();
-
-
-                if (error) {
-                    throw error;
-                }
-
-
-                records.unshift(data);
-
-
-                renderAll();
-
-
-                closeModal();
-
-
-                document
-                    .getElementById(
-                        "exerciseForm"
-                    )
-                    .reset();
-
-
-                showToast(
-                    "운동 기록이 저장되었습니다."
-                );
-
-
-            } catch (error) {
-
-                console.error(error);
-
-                alert(
-                    "운동 기록 저장에 실패했습니다.\n" +
-                    error.message
-                );
-
-            } finally {
-
-                saveButton.disabled =
-                    false;
-
-                saveButton.textContent =
-                    "기록 저장";
-            }
-        }
+const themeButton =
+    document.getElementById(
+        "themeButton"
     );
 
 
-/* =====================================================
-   기록 삭제
-===================================================== */
+function applyTheme(theme) {
 
-async function deleteRecord(id) {
+    if (theme === "light") {
 
-    if (
-        !confirm(
-            "이 운동 기록을 삭제할까요?"
-        )
-    ) {
-        return;
-    }
-
-
-    try {
-
-        const { error } =
-            await supabaseClient
-                .from(
-                    "exercise_records"
-                )
-                .delete()
-                .eq(
-                    "id",
-                    id
-                );
-
-
-        if (error) {
-            throw error;
-        }
-
-
-        records =
-            records.filter(
-                record =>
-                    String(record.id) !==
-                    String(id)
-            );
-
-
-        renderAll();
-
-
-        showToast(
-            "기록이 삭제되었습니다."
+        document.body.classList.add(
+            "light"
         );
 
+        themeButton.textContent =
+            "☀";
 
-    } catch (error) {
+    } else {
 
-        console.error(error);
-
-        alert(
-            "삭제에 실패했습니다.\n" +
-            error.message
+        document.body.classList.remove(
+            "light"
         );
+
+        themeButton.textContent =
+            "☾";
     }
 }
 
 
-/* =====================================================
-   전체 삭제
-===================================================== */
-
-async function clearAllRecords() {
-
-    if (!currentUser) {
-        return;
-    }
+const savedTheme =
+    localStorage.getItem(
+        "workoutTheme"
+    ) || "dark";
 
 
-    if (records.length === 0) {
+applyTheme(savedTheme);
 
-        alert(
-            "삭제할 기록이 없습니다."
+
+themeButton.addEventListener(
+    "click",
+    () => {
+
+        const isLight =
+            document.body.classList.contains(
+                "light"
+            );
+
+
+        const nextTheme =
+            isLight
+                ? "dark"
+                : "light";
+
+
+        localStorage.setItem(
+            "workoutTheme",
+            nextTheme
         );
 
-        return;
+
+        applyTheme(
+            nextTheme
+        );
     }
+);
 
 
-    if (
-        !confirm(
-            "모든 운동 기록을 삭제할까요?"
-        )
-    ) {
-        return;
-    }
+/* =========================================================
+   로그아웃
+========================================================= */
 
+document.getElementById(
+    "logoutButton"
+).addEventListener(
+    "click",
+    () => {
 
-    try {
+        removeLogin();
 
-        const { error } =
-            await supabaseClient
-                .from(
-                    "exercise_records"
-                )
-                .delete()
-                .eq(
-                    "user_id",
-                    currentUser.id
-                );
-
-
-        if (error) {
-            throw error;
-        }
-
+        currentUser = null;
 
         records = [];
 
 
-        renderAll();
+        document
+            .getElementById("appPage")
+            .classList.add("hidden");
 
 
-        showToast(
-            "모든 기록이 삭제되었습니다."
-        );
+        document
+            .getElementById("authPage")
+            .classList.remove("hidden");
 
 
-    } catch (error) {
+        document
+            .getElementById("authName")
+            .value = "";
 
-        console.error(error);
 
-        alert(
-            "전체 삭제에 실패했습니다.\n" +
-            error.message
+        document
+            .getElementById("authPassword")
+            .value = "";
+
+
+        showAuthMessage("");
+
+        window.scrollTo(
+            0,
+            0
         );
     }
-}
+);
 
 
-/* =====================================================
-   모달
-===================================================== */
+/* =========================================================
+   모달 닫기
+========================================================= */
 
-const modal =
-    document.getElementById(
-        "modal"
-    );
-
-
-function openModal() {
-
-    modal.classList.remove(
-        "hidden"
-    );
+function closeModal(id) {
 
     document
-        .getElementById(
-            "exerciseName"
-        )
-        .focus();
-}
-
-
-function closeModal() {
-
-    modal.classList.add(
-        "hidden"
-    );
-}
-
-
-document
-    .getElementById(
-        "addRecordButton"
-    )
-    .addEventListener(
-        "click",
-        openModal
-    );
-
-
-document
-    .getElementById(
-        "closeModalButton"
-    )
-    .addEventListener(
-        "click",
-        closeModal
-    );
-
-
-document
-    .getElementById(
-        "modalBackdrop"
-    )
-    .addEventListener(
-        "click",
-        closeModal
-    );
-
-
-/* =====================================================
-   네비게이션
-===================================================== */
-
-document
-    .querySelectorAll(".nav-button")
-    .forEach(button => {
-
-        button.addEventListener(
-            "click",
-            () => {
-
-                const pageId =
-                    button.dataset.page;
-
-
-                document
-                    .querySelectorAll(
-                        ".nav-button"
-                    )
-                    .forEach(item => {
-
-                        item.classList.remove(
-                            "active"
-                        );
-                    });
-
-
-                document
-                    .querySelectorAll(
-                        ".page"
-                    )
-                    .forEach(page => {
-
-                        page.classList.remove(
-                            "active-page"
-                        );
-                    });
-
-
-                button.classList.add(
-                    "active"
-                );
-
-
-                document
-                    .getElementById(
-                        pageId
-                    )
-                    .classList.add(
-                        "active-page"
-                    );
-
-
-                window.scrollTo(
-                    0,
-                    0
-                );
-
-
-                if (
-                    pageId ===
-                    "calendarPage"
-                ) {
-
-                    renderCalendar();
-                }
-
-
-                if (
-                    pageId ===
-                    "statsPage"
-                ) {
-
-                    renderStatsPage();
-                }
-            }
+        .getElementById(id)
+        .classList.add(
+            "hidden"
         );
-    });
+}
 
 
-/* =====================================================
-   달력 이전 / 다음
-===================================================== */
-
-document
-    .getElementById(
-        "prevMonthButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            calendarDate =
-                new Date(
-                    calendarDate.getFullYear(),
-                    calendarDate.getMonth() - 1,
-                    1
-                );
-
-            renderCalendar();
-        }
-    );
-
-
-document
-    .getElementById(
-        "nextMonthButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            calendarDate =
-                new Date(
-                    calendarDate.getFullYear(),
-                    calendarDate.getMonth() + 1,
-                    1
-                );
-
-            renderCalendar();
-        }
-    );
-
-
-/* =====================================================
-   오늘 버튼
-===================================================== */
-
-document
-    .getElementById(
-        "calendarTodayButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            const today =
-                new Date();
-
-
-            calendarDate =
-                new Date(
-                    today.getFullYear(),
-                    today.getMonth(),
-                    1
-                );
-
-
-            selectedDate =
-                today;
-
-
-            renderCalendar();
-        }
-    );
-
-
-/* =====================================================
-   로그아웃
-===================================================== */
-
-document
-    .getElementById(
-        "logoutButton"
-    )
-    .addEventListener(
-        "click",
-        () => {
-
-            if (
-                !confirm(
-                    "로그아웃할까요?"
-                )
-            ) {
-                return;
-            }
-
-
-            removeLogin();
-
-            currentUser =
-                null;
-
-            records = [];
-
-
-            appPage.classList.add(
-                "hidden"
-            );
-
-            authPage.classList.remove(
-                "hidden"
-            );
-
-
-            authName.value = "";
-            authPassword.value = "";
-
-            showAuthMessage("");
-
-            window.scrollTo(
-                0,
-                0
-            );
-        }
-    );
-
-
-/* =====================================================
-   토스트
-===================================================== */
+/* =========================================================
+   Toast
+========================================================= */
 
 let toastTimer = null;
 
@@ -2093,24 +2153,29 @@ function showToast(message) {
 }
 
 
-/* =====================================================
-   HTML 안전 처리
-===================================================== */
+/* =========================================================
+   ESC로 모달 닫기
+========================================================= */
 
-function escapeHtml(value) {
+document.addEventListener(
+    "keydown",
+    event => {
 
-    return String(value)
-        .replaceAll("&", "&amp;")
-        .replaceAll("<", "&lt;")
-        .replaceAll(">", "&gt;")
-        .replaceAll('"', "&quot;")
-        .replaceAll("'", "&#039;");
-}
+        if (event.key !== "Escape") {
+            return;
+        }
 
 
-/* =====================================================
+        closeModal("modal");
+        closeModal("dayModal");
+        closeModal("statisticsModal");
+    }
+);
+
+
+/* =========================================================
    시작
-===================================================== */
+========================================================= */
 
 async function start() {
 
@@ -2127,13 +2192,13 @@ async function start() {
 
     } else {
 
-        authPage.classList.remove(
-            "hidden"
-        );
+        document
+            .getElementById("authPage")
+            .classList.remove("hidden");
 
-        appPage.classList.add(
-            "hidden"
-        );
+        document
+            .getElementById("appPage")
+            .classList.add("hidden");
     }
 }
 
