@@ -2,18 +2,17 @@
 <html lang="ko">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-    <title>운동 기록</title>
-
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link
-        href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;600;700;800&display=swap"
-        rel="stylesheet"
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
     >
 
+    <title>WORKOUT TRACKER</title>
+
     <link rel="stylesheet" href="style.css">
+
+    <!-- Supabase -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 
 <body>
@@ -21,70 +20,92 @@
 <!-- =========================
      로그인 / 회원가입
 ========================= -->
-
 <section id="authPage" class="auth-page">
 
     <div class="auth-container">
 
-        <div class="auth-logo">
-            <div class="logo-icon">W</div>
+        <div class="brand auth-brand">
+            <div class="brand-logo">W</div>
+
             <div>
-                <h1>WORKOUT</h1>
-                <p>운동 기록</p>
+                <strong>WORKOUT TRACKER</strong>
+                <span>운동 기록</span>
             </div>
         </div>
 
         <div class="auth-card">
 
+            <div class="auth-title">
+                <span>TODAY</span>
+                <h1>오늘도 운동을<br>기록해보세요.</h1>
+                <p>
+                    운동 기록을 저장하고 나의 운동 패턴을 확인하세요.
+                </p>
+            </div>
+
             <div class="auth-tabs">
-                <button id="loginTab" class="auth-tab active">
+                <button
+                    id="loginTab"
+                    class="auth-tab active"
+                >
                     로그인
                 </button>
 
-                <button id="signupTab" class="auth-tab">
+                <button
+                    id="signupTab"
+                    class="auth-tab"
+                >
                     회원가입
                 </button>
             </div>
 
-            <div class="auth-title">
-                <h2 id="authTitle">다시 만나서 반가워요</h2>
-                <p id="authDescription">
-                    운동 기록을 확인하려면 로그인하세요.
-                </p>
-            </div>
-
             <div class="input-group">
-                <label for="authName">이름</label>
+
+                <label for="authName">
+                    이름
+                </label>
 
                 <input
                     id="authName"
                     type="text"
                     placeholder="이름을 입력하세요"
-                    autocomplete="username"
+                    autocomplete="off"
                 >
+
             </div>
 
             <div class="input-group">
-                <label for="authPassword">비밀번호</label>
+
+                <label for="authPassword">
+                    비밀번호
+                </label>
 
                 <input
                     id="authPassword"
                     type="password"
                     placeholder="비밀번호를 입력하세요"
-                    autocomplete="current-password"
                 >
+
             </div>
 
-            <div id="passwordHelp" class="password-help hidden">
-                비밀번호는 6자 이상이며 영어, 숫자, 특수문자를
-                각각 1개 이상 포함해야 합니다.
-            </div>
+            <p
+                id="passwordHint"
+                class="password-hint hidden"
+            >
+                6자 이상 · 영문 · 숫자 · 특수문자를 포함해야 합니다.
+            </p>
 
-            <button id="authButton" class="primary-button">
+            <button
+                id="authButton"
+                class="primary-button auth-button"
+            >
                 로그인
             </button>
 
-            <p id="authMessage" class="auth-message"></p>
+            <p
+                id="authMessage"
+                class="auth-message"
+            ></p>
 
         </div>
 
@@ -96,268 +117,330 @@
 <!-- =========================
      메인 앱
 ========================= -->
-
 <main id="appPage" class="app hidden">
 
     <!-- 상단 헤더 -->
-
     <header class="top-header">
 
-        <div class="header-inner">
+        <div class="brand">
 
-            <div class="brand">
-                <div class="brand-icon">W</div>
-
-                <div>
-                    <h1>WORKOUT</h1>
-                    <span>운동 기록</span>
-                </div>
+            <div class="brand-logo">
+                W
             </div>
 
-            <div class="user-area">
-
-                <span>
-                    <strong id="userNameDisplay">사용자</strong>님
-                </span>
-
-                <button id="logoutButton" class="logout-button">
-                    로그아웃
-                </button>
-
+            <div class="brand-text">
+                <strong>WORKOUT TRACKER</strong>
+                <span>운동 기록</span>
             </div>
+
+        </div>
+
+
+        <div class="header-right">
+
+            <button
+                id="themeButton"
+                class="icon-button"
+                title="테마 변경"
+            >
+                ☾
+            </button>
+
+            <span
+                id="userNameDisplay"
+                class="user-name"
+            >
+                사용자
+            </span>
+
+            <button
+                id="logoutButton"
+                class="logout-button"
+            >
+                로그아웃
+            </button>
 
         </div>
 
     </header>
 
 
-    <!-- 네비게이션 -->
+    <!-- 메인 컨텐츠 -->
+    <div class="dashboard">
 
-    <nav class="main-nav">
+        <!-- =========================
+             HERO
+        ========================= -->
+        <section class="hero">
 
-        <div class="nav-inner">
+            <div>
 
-            <button
-                id="recordNav"
-                class="nav-button active"
-                data-page="recordPage"
-            >
-                <span class="nav-icon">▣</span>
-                기록
-            </button>
+                <span class="eyebrow">
+                    TODAY
+                </span>
 
-            <button
-                id="calendarNav"
-                class="nav-button"
-                data-page="calendarPage"
-            >
-                <span class="nav-icon">□</span>
-                캘린더
-            </button>
+                <h1>
+                    오늘도 운동을<br>
+                    기록해보세요.
+                </h1>
 
-            <button
-                id="statsNav"
-                class="nav-button"
-                data-page="statsPage"
-            >
-                <span class="nav-icon">▥</span>
-                통계
-            </button>
-
-        </div>
-
-    </nav>
-
-
-    <!-- =========================
-         기록 페이지
-    ========================= -->
-
-    <section id="recordPage" class="page active-page">
-
-        <div class="page-container">
-
-            <div class="page-heading">
-
-                <div>
-                    <p class="eyebrow">WORKOUT RECORD</p>
-                    <h2>운동 기록</h2>
-                    <p>
-                        오늘의 운동을 기록하고 나의 활동량을 확인하세요.
-                    </p>
-                </div>
-
-                <button id="addRecordButton" class="add-button">
-                    <span>＋</span>
-                    기록 추가
-                </button>
+                <p>
+                    운동 기록을 저장하고 나의 운동 패턴을 확인하세요.
+                </p>
 
             </div>
 
+            <button
+                id="addButton"
+                class="primary-button add-main-button"
+            >
+                <span>＋</span>
+                기록 추가
+            </button>
 
-            <!-- 기간별 요약 -->
-
-            <div class="summary-grid">
-
-                <div class="summary-card">
-                    <div class="summary-label">
-                        오늘
-                    </div>
-
-                    <div id="todayTime" class="summary-value">
-                        0분
-                    </div>
-
-                    <div id="todayCount" class="summary-sub">
-                        0회 기록
-                    </div>
-                </div>
+        </section>
 
 
-                <div class="summary-card">
-                    <div class="summary-label">
-                        이번 주
-                    </div>
+        <!-- =========================
+             기간별 통계 카드
+        ========================= -->
+        <section class="stats-grid">
 
-                    <div id="weekTime" class="summary-value">
-                        0분
-                    </div>
+            <article class="stat-card today-card">
 
-                    <div id="weekCount" class="summary-sub">
-                        0회 기록
-                    </div>
-                </div>
+                <span class="stat-label">
+                    오늘 운동
+                </span>
 
+                <strong id="todayTime">
+                    0분
+                </strong>
 
-                <div class="summary-card">
-                    <div class="summary-label">
-                        이번 달
-                    </div>
+                <small id="todayCount">
+                    0회 기록
+                </small>
 
-                    <div id="monthTime" class="summary-value">
-                        0분
-                    </div>
-
-                    <div id="monthCount" class="summary-sub">
-                        0회 기록
-                    </div>
-                </div>
-
-            </div>
+            </article>
 
 
-            <!-- 전체 통계 -->
+            <article class="stat-card">
 
-            <div class="overview-card">
+                <span class="stat-label">
+                    이번 주
+                </span>
 
-                <div class="section-title">
+                <strong id="weekTime">
+                    0분
+                </strong>
+
+                <small id="weekCount">
+                    0회 기록
+                </small>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <span class="stat-label">
+                    이번 달
+                </span>
+
+                <strong id="monthTime">
+                    0분
+                </strong>
+
+                <small id="monthCount">
+                    0회 기록
+                </small>
+
+            </article>
+
+
+            <article class="stat-card">
+
+                <span class="stat-label">
+                    전체 운동
+                </span>
+
+                <strong id="totalTime">
+                    0분
+                </strong>
+
+                <small id="recordCount">
+                    총 0회 기록
+                </small>
+
+            </article>
+
+        </section>
+
+
+        <!-- =========================
+             메인 그리드
+        ========================= -->
+        <section class="main-grid">
+
+            <!-- 운동 기록 -->
+            <div class="panel history-panel">
+
+                <div class="panel-header">
+
                     <div>
-                        <p class="eyebrow">OVERVIEW</p>
-                        <h3>전체 운동 현황</h3>
-                    </div>
-                </div>
 
-                <div class="overview-grid">
+                        <span class="panel-eyebrow">
+                            HISTORY
+                        </span>
 
-                    <div>
-                        <span>총 운동 시간</span>
-                        <strong id="totalTime">0분</strong>
-                    </div>
+                        <h2>
+                            운동 기록
+                        </h2>
 
-                    <div>
-                        <span>총 기록</span>
-                        <strong id="recordCount">0회</strong>
                     </div>
 
-                    <div>
-                        <span>평균 운동 시간</span>
-                        <strong id="averageTime">0분</strong>
-                    </div>
-
-                    <div>
-                        <span>최장 운동</span>
-                        <strong id="bestTime">0분</strong>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 기록 목록 -->
-
-            <div class="records-section">
-
-                <div class="section-header">
-
-                    <div>
-                        <p class="eyebrow">HISTORY</p>
-                        <h3>최근 운동 기록</h3>
-                    </div>
-
-                    <span id="recordTotalLabel" class="record-total">
+                    <span
+                        id="historyCount"
+                        class="panel-count"
+                    >
                         0개
                     </span>
 
                 </div>
 
-                <div id="recordList" class="record-list">
-                </div>
+
+                <div
+                    id="recordList"
+                    class="record-list"
+                ></div>
 
             </div>
 
-        </div>
 
-    </section>
+            <!-- 오른쪽 -->
+            <div class="side-column">
+
+                <!-- 요약 -->
+                <div class="panel summary-panel">
+
+                    <div class="panel-header">
+
+                        <div>
+
+                            <span class="panel-eyebrow">
+                                SUMMARY
+                            </span>
+
+                            <h2>
+                                나의 기록
+                            </h2>
+
+                        </div>
+
+                    </div>
 
 
-    <!-- =========================
-         캘린더 페이지
-    ========================= -->
+                    <div class="summary-row">
 
-    <section id="calendarPage" class="page">
+                        <span>
+                            평균 운동 시간
+                        </span>
 
-        <div class="page-container">
+                        <strong id="averageTime">
+                            0분
+                        </strong>
 
-            <div class="page-heading">
+                    </div>
 
-                <div>
-                    <p class="eyebrow">WORKOUT CALENDAR</p>
-                    <h2>운동 캘린더</h2>
-                    <p>
-                        운동한 날짜를 확인하고 해당 날짜의 기록을 볼 수 있습니다.
-                    </p>
+
+                    <div class="summary-row">
+
+                        <span>
+                            가장 오래 한 운동
+                        </span>
+
+                        <strong id="bestWorkout">
+                            -
+                        </strong>
+
+                    </div>
+
+
+                    <div class="summary-row">
+
+                        <span>
+                            기록 수
+                        </span>
+
+                        <strong id="summaryCount">
+                            0회
+                        </strong>
+
+                    </div>
+
                 </div>
 
-                <button id="calendarTodayButton" class="secondary-button">
-                    오늘
+
+                <!-- 통계 -->
+                <button
+                    id="statisticsButton"
+                    class="analytics-card"
+                >
+
+                    <div>
+
+                        <span>
+                            ANALYTICS
+                        </span>
+
+                        <strong>
+                            운동 통계 보기
+                        </strong>
+
+                    </div>
+
+                    <b>
+                        →
+                    </b>
+
                 </button>
 
-            </div>
-
-
-            <div class="calendar-layout">
 
                 <!-- 달력 -->
+                <div class="panel mini-calendar-panel">
 
-                <div class="calendar-card">
+                    <div class="panel-header">
 
-                    <div class="calendar-header">
+                        <div>
+
+                            <span class="panel-eyebrow">
+                                CALENDAR
+                            </span>
+
+                            <h2>
+                                운동 달력
+                            </h2>
+
+                        </div>
+
+                    </div>
+
+
+                    <div class="calendar-mini-header">
 
                         <button
                             id="prevMonthButton"
-                            class="month-button"
+                            class="calendar-arrow"
                         >
                             ‹
                         </button>
 
-                        <h3 id="calendarTitle">
+                        <strong id="calendarTitle">
                             2026년 9월
-                        </h3>
+                        </strong>
 
                         <button
                             id="nextMonthButton"
-                            class="month-button"
+                            class="calendar-arrow"
                         >
                             ›
                         </button>
@@ -365,262 +448,38 @@
                     </div>
 
 
-                    <div class="weekday-row">
-
-                        <span>일</span>
+                    <div class="calendar-week">
                         <span>월</span>
                         <span>화</span>
                         <span>수</span>
                         <span>목</span>
                         <span>금</span>
                         <span>토</span>
-
+                        <span>일</span>
                     </div>
 
 
-                    <div id="calendarGrid" class="calendar-grid">
-                    </div>
+                    <div
+                        id="calendarGrid"
+                        class="calendar-grid"
+                    ></div>
 
                 </div>
 
 
-                <!-- 선택 날짜 정보 -->
-
-                <div class="selected-day-card">
-
-                    <div class="selected-day-header">
-
-                        <div>
-                            <p class="eyebrow">SELECTED DATE</p>
-
-                            <h3 id="selectedDateTitle">
-                                날짜를 선택하세요
-                            </h3>
-                        </div>
-
-                    </div>
-
-
-                    <div class="day-summary">
-
-                        <div>
-                            <span>총 운동 시간</span>
-                            <strong id="selectedDayTotal">
-                                0분
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>운동 횟수</span>
-                            <strong id="selectedDayCount">
-                                0회
-                            </strong>
-                        </div>
-
-                        <div>
-                            <span>평균 시간</span>
-                            <strong id="selectedDayAverage">
-                                0분
-                            </strong>
-                        </div>
-
-                    </div>
-
-
-                    <div id="selectedDayRecords" class="day-record-list">
-                    </div>
-
-                </div>
+                <!-- 전체 삭제 -->
+                <button
+                    id="clearAllButton"
+                    class="clear-button"
+                >
+                    전체 운동 기록 삭제
+                </button>
 
             </div>
 
-        </div>
+        </section>
 
-    </section>
-
-
-    <!-- =========================
-         통계 페이지
-    ========================= -->
-
-    <section id="statsPage" class="page">
-
-        <div class="page-container">
-
-            <div class="page-heading">
-
-                <div>
-                    <p class="eyebrow">WORKOUT STATISTICS</p>
-                    <h2>통계</h2>
-                    <p>
-                        운동 기록을 기간별로 확인할 수 있습니다.
-                    </p>
-                </div>
-
-            </div>
-
-
-            <!-- 핵심 통계 -->
-
-            <div class="stats-main-grid">
-
-                <div class="stats-big-card">
-
-                    <span>총 운동 시간</span>
-
-                    <strong id="statsTotalTime">
-                        0분
-                    </strong>
-
-                    <small>
-                        지금까지 기록한 전체 운동 시간
-                    </small>
-
-                </div>
-
-
-                <div class="stats-big-card">
-
-                    <span>총 운동 횟수</span>
-
-                    <strong id="statsRecordCount">
-                        0회
-                    </strong>
-
-                    <small>
-                        지금까지 저장된 운동 기록
-                    </small>
-
-                </div>
-
-            </div>
-
-
-            <!-- 기간별 통계 -->
-
-            <div class="stats-card">
-
-                <div class="section-header">
-
-                    <div>
-                        <p class="eyebrow">PERIOD</p>
-                        <h3>기간별 운동 현황</h3>
-                    </div>
-
-                </div>
-
-
-                <div class="period-stat-grid">
-
-                    <div class="period-stat">
-                        <span>오늘</span>
-                        <strong id="statsTodayTime">0분</strong>
-                        <small id="statsTodayCount">0회</small>
-                    </div>
-
-                    <div class="period-stat">
-                        <span>이번 주</span>
-                        <strong id="statsWeekTime">0분</strong>
-                        <small id="statsWeekCount">0회</small>
-                    </div>
-
-                    <div class="period-stat">
-                        <span>이번 달</span>
-                        <strong id="statsMonthTime">0분</strong>
-                        <small id="statsMonthCount">0회</small>
-                    </div>
-
-                    <div class="period-stat">
-                        <span>평균</span>
-                        <strong id="statsAverageTime">0분</strong>
-                        <small>1회 기준</small>
-                    </div>
-
-                    <div class="period-stat">
-                        <span>최장 기록</span>
-                        <strong id="statsBestTime">0분</strong>
-                        <small id="statsBestName">-</small>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 운동 기록 분포 -->
-
-            <div class="stats-card">
-
-                <div class="section-header">
-
-                    <div>
-                        <p class="eyebrow">ACTIVITY</p>
-                        <h3>운동 기록 현황</h3>
-                    </div>
-
-                </div>
-
-
-                <div class="activity-list">
-
-                    <div class="activity-row">
-                        <span>오늘</span>
-
-                        <div class="activity-bar">
-                            <div id="todayBar" class="activity-fill"></div>
-                        </div>
-
-                        <strong id="todayBarValue">0회</strong>
-                    </div>
-
-
-                    <div class="activity-row">
-                        <span>이번 주</span>
-
-                        <div class="activity-bar">
-                            <div id="weekBar" class="activity-fill"></div>
-                        </div>
-
-                        <strong id="weekBarValue">0회</strong>
-                    </div>
-
-
-                    <div class="activity-row">
-                        <span>이번 달</span>
-
-                        <div class="activity-bar">
-                            <div id="monthBar" class="activity-fill"></div>
-                        </div>
-
-                        <strong id="monthBarValue">0회</strong>
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- 최근 기록 -->
-
-            <div class="stats-card">
-
-                <div class="section-header">
-
-                    <div>
-                        <p class="eyebrow">RECENT</p>
-                        <h3>최근 기록</h3>
-                    </div>
-
-                </div>
-
-                <div id="statsRecentList" class="stats-recent-list">
-                </div>
-
-            </div>
-
-        </div>
-
-    </section>
+    </div>
 
 </main>
 
@@ -628,21 +487,33 @@
 <!-- =========================
      기록 추가 모달
 ========================= -->
+<div
+    id="modal"
+    class="modal hidden"
+>
 
-<div id="modal" class="modal hidden">
-
-    <div id="modalBackdrop" class="modal-backdrop"></div>
+    <div class="modal-backdrop"></div>
 
     <div class="modal-card">
 
         <div class="modal-header">
 
             <div>
-                <p class="eyebrow">NEW RECORD</p>
-                <h2>운동 기록 추가</h2>
+
+                <span class="panel-eyebrow">
+                    NEW RECORD
+                </span>
+
+                <h2>
+                    운동 기록 추가
+                </h2>
+
             </div>
 
-            <button id="closeModalButton" class="modal-close">
+            <button
+                id="closeModalButton"
+                class="modal-close"
+            >
                 ×
             </button>
 
@@ -660,7 +531,7 @@
                 <input
                     id="exerciseName"
                     type="text"
-                    placeholder="예: 달리기"
+                    placeholder="예: 러닝"
                     maxlength="30"
                     required
                 >
@@ -685,7 +556,9 @@
                         required
                     >
 
-                    <span>분</span>
+                    <span>
+                        분
+                    </span>
 
                 </div>
 
@@ -694,8 +567,7 @@
 
             <button
                 type="submit"
-                id="saveRecordButton"
-                class="primary-button"
+                class="primary-button modal-submit"
             >
                 기록 저장
             </button>
@@ -707,16 +579,171 @@
 </div>
 
 
-<!-- 토스트 -->
+<!-- =========================
+     날짜 상세 모달
+========================= -->
+<div
+    id="dayModal"
+    class="modal hidden"
+>
 
-<div id="toast" class="toast">
-    저장되었습니다.
+    <div class="modal-backdrop"></div>
+
+    <div class="modal-card day-modal-card">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    DAILY RECORD
+                </span>
+
+                <h2 id="dayModalTitle">
+                    운동 기록
+                </h2>
+
+            </div>
+
+            <button
+                id="closeDayModalButton"
+                class="modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="day-summary">
+
+            <div>
+                <span>운동 시간</span>
+                <strong id="dayTotalTime">0분</strong>
+            </div>
+
+            <div>
+                <span>기록 수</span>
+                <strong id="dayRecordCount">0회</strong>
+            </div>
+
+            <div>
+                <span>평균 시간</span>
+                <strong id="dayAverageTime">0분</strong>
+            </div>
+
+        </div>
+
+
+        <div
+            id="dayRecordList"
+            class="day-record-list"
+        ></div>
+
+    </div>
+
 </div>
 
 
-<!-- Supabase -->
+<!-- =========================
+     통계 모달
+========================= -->
+<div
+    id="statisticsModal"
+    class="modal hidden"
+>
 
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <div class="modal-backdrop"></div>
+
+    <div class="modal-card statistics-modal-card">
+
+        <div class="modal-header">
+
+            <div>
+
+                <span class="panel-eyebrow">
+                    ANALYTICS
+                </span>
+
+                <h2>
+                    운동 통계
+                </h2>
+
+            </div>
+
+            <button
+                id="closeStatisticsButton"
+                class="modal-close"
+            >
+                ×
+            </button>
+
+        </div>
+
+
+        <div class="statistics-overview">
+
+            <div class="stat-box">
+                <span>총 운동 시간</span>
+                <strong id="statisticsTotal">0분</strong>
+            </div>
+
+            <div class="stat-box">
+                <span>총 기록</span>
+                <strong id="statisticsCount">0회</strong>
+            </div>
+
+            <div class="stat-box">
+                <span>평균 운동 시간</span>
+                <strong id="statisticsAverage">0분</strong>
+            </div>
+
+            <div class="stat-box">
+                <span>가장 오래 한 운동</span>
+                <strong id="statisticsBest">-</strong>
+            </div>
+
+        </div>
+
+
+        <div class="chart-section">
+
+            <div class="chart-title">
+                최근 7일 운동 시간
+            </div>
+
+            <div
+                id="weeklyChart"
+                class="weekly-chart"
+            ></div>
+
+        </div>
+
+
+        <div class="exercise-stat-section">
+
+            <div class="chart-title">
+                운동 종류별 기록
+            </div>
+
+            <div
+                id="exerciseStatistics"
+                class="exercise-statistics"
+            ></div>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- Toast -->
+<div
+    id="toast"
+    class="toast"
+></div>
+
 
 <script src="script.js"></script>
 
